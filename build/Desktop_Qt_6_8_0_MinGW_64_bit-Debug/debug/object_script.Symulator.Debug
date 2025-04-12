@@ -1,0 +1,12 @@
+debug/arx.o
+debug/dialogarx.o
+debug/generator.o
+debug/klatkasymulacji.o
+debug/main.o
+debug/mainwindow.o
+debug/pid.o
+debug/symulacja.o
+debug/wartosczadana.o
+debug/zaklocenia.o
+debug/moc_dialogarx.o
+debug/moc_mainwindow.o
