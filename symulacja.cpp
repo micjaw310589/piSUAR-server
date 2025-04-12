@@ -1,15 +1,23 @@
 #include "symulacja.h"
 #include "wartosczadana.h"
 
-Symulacja::Symulacja()
-    : m_pid(PID(0.0, 0.0, 0.0))
+Symulacja::Symulacja(QObject *parent)
+    : QObject{parent}
+    , m_pid(PID(0.0, 0.0, 0.0))
     , m_arx(ARX(-0.4, 0.0, 0.0, 0.6, 0.0, 0.0, 1))
     , m_wartosc_zadana(WartoscZadana(TypWartosciZadanej::SkokJednostkowy, 10.0, 4, 10.0))
     , m_zaklocenia(Zaklocenia(0.0, 0.1))
-    , m_i(0) /*, m_opoznienie(3)*/
+    , m_i(0)    /*, m_opoznienie(3)*/
+    , m_socket(this)
 {
     m_klatki_symulacji = std::list<KlatkaSymulacji>();
     // m_zaklocenia = Zaklocenia(0.0, 0.1);
+
+    // connecty do socketa
+    QAbstractSocket::connect(&m_socket, SIGNAL(connected()),
+                             this, SLOT(s_connected()));
+    QAbstractSocket::connect(&m_socket, SIGNAL(disconnected()),
+                             this, SIGNAL(disconnected()));
 }
 
 /* Jedna z najważniejszych funkcji w tym programi.
@@ -33,6 +41,10 @@ void Symulacja::nastepna_klatka()
                                                   m_pid.get_poprz_d());
     m_klatki_symulacji.push_back(nowa_klatka);
     m_i++;
+}
+
+void Symulacja::s_connected() {
+    emit connected(m_IP, m_port);
 }
 
 /* Settery i gettery.
@@ -71,3 +83,20 @@ void Symulacja::set_zaklocenia(double srednia, double odchylenie)
     m_zaklocenia.set_srednia(srednia);
     m_zaklocenia.set_odchylenie(odchylenie);
 }
+
+
+// klient - połączenie z siecią
+
+void Symulacja::connect(QString ip_addr, int port) {
+    m_socket.connectToHost(ip_addr, port);
+    m_IP = ip_addr;
+    m_port = port;
+}
+
+void Symulacja::disconnect() {
+    m_socket.close();
+}
+
+// bool Symulacja::isConnected() {
+//     return m_socket.isOpen();
+// }

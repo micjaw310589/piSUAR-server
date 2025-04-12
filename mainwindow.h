@@ -40,6 +40,11 @@ private slots:
     void on_updateButton_clicked();
     void on_zeruj_czesc_calkujaca_clicked();
     void on_zmien_ustawienia_arx_clicked();
+    void on_btnPolacz_clicked();
+    void on_btnRozlacz_clicked();
+
+    void s_connected(QString, int);
+    void s_disconnected();
 
 private:
     Ui::MainWindow *ui;
@@ -64,5 +69,9 @@ private:
     DialogARX *dialog_arx = nullptr;
 
     void zaktualizuj_wartosci(bool aktualizuj_arx);
+
+    QString sklejAdresIP();
+    bool sprawdzPoprawnosc(QString IP, int port);
+    void resetujKlienta();
 };
 #endif // MAINWINDOW_H

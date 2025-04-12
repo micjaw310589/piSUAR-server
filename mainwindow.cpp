@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include "dialogarx.h"
+#include "qhostaddress.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(timer_timeout_slot()));
     /* Inicjalizacja backendu w postaci klasy symulacji
      */
-    symulacja = new Symulacja();
+    symulacja = new Symulacja(this);
     /* Definicje poszczególnych linii wykresów
      */
     wykres_wartosci_zadanej = new QLineSeries;
@@ -415,3 +416,84 @@ void MainWindow::accepted_dialog_arx()
     ui->arx_b_3->setValue(b3);
     ui->opoznienie->setValue(opoznienie);
 }
+
+void MainWindow::on_btnPolacz_clicked()
+{
+    QString adres = sklejAdresIP();
+    int port = ui->spinBox_Port->value();
+    if (!sprawdzPoprawnosc(adres, port))
+        return;
+    resetujKlienta();
+    symulacja->connect(adres, port);
+}
+
+void MainWindow::on_btnRozlacz_clicked()
+{
+    symulacja->disconnect();
+}
+
+
+void MainWindow::s_connected(QString adr, int port) {
+    // zablokuj wszystkie kontrolki poza PID
+    ui->txtIP_A->setEnabled(false);
+    ui->txtIP_B->setEnabled(false);
+    ui->txtIP_C->setEnabled(false);
+    ui->txtIP_D->setEnabled(false);
+    ui->spinBox_Port->setEnabled(false);
+    ui->ckbServer->setEnabled(false);
+
+    ui->lblStatus->setText("Połączono z " + adr + ":" + QString::number(port));
+    ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
+}
+
+void MainWindow::s_disconnected() {
+    ui->txtIP_A->setEnabled(true);
+    ui->txtIP_B->setEnabled(true);
+    ui->txtIP_C->setEnabled(true);
+    ui->txtIP_D->setEnabled(true);
+    ui->spinBox_Port->setEnabled(true);
+    ui->ckbServer->setEnabled(true);
+
+    ui->lblStatus->setText("Offline");
+    ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
+}
+
+
+QString MainWindow::sklejAdresIP() {
+
+    return ui->txtIP_A->text() + "."
+         + ui->txtIP_B->text() + "."
+         + ui->txtIP_C->text() + "."
+         + ui->txtIP_D->text();
+}
+
+bool MainWindow::sprawdzPoprawnosc(QString IP, int port) {
+    QHostAddress adres(IP);
+
+    if (adres.protocol() != QAbstractSocket::IPv4Protocol) {
+        ui->statusbar->showMessage("Nieprawidłowy adres IP!");
+        return false;
+    }
+
+    if (port < 0 || 65535 < port) {
+        ui->statusbar->showMessage("Nieprawidłowy port!");
+        return false;
+    }
+
+    return true;
+}
+
+void MainWindow::resetujKlienta() {
+    if (symulacja != nullptr) {
+        symulacja->disconnect();
+        delete symulacja;
+    }
+    symulacja = new Symulacja(this);
+
+    connect(symulacja, SIGNAL(connected(QString,int)),
+            this, SLOT(s_connected(QString,int)));
+    connect(symulacja, SIGNAL(disconnected()),
+            this, SLOT(s_disconnected()));
+}
+
+
