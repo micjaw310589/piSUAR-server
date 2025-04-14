@@ -42,9 +42,15 @@ private slots:
     void on_zmien_ustawienia_arx_clicked();
     void on_btnPolacz_clicked();
     void on_btnRozlacz_clicked();
+    void on_ckbServer_checkStateChanged(const Qt::CheckState &arg1);
 
+    // klient
     void s_connected(QString, int);
     void s_disconnected();
+
+    // serwer
+    void s_clientConnected(QString);
+    void s_clientDisconnected();
 
 private:
     Ui::MainWindow *ui;
@@ -72,6 +78,8 @@ private:
 
     QString sklejAdresIP();
     bool sprawdzPoprawnosc(QString IP, int port);
+    bool sprawdzPoprawnosc(int port);
     void resetujKlienta();
+    void resetujSerwer();
 };
 #endif // MAINWINDOW_H

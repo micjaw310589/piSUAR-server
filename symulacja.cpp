@@ -8,16 +8,22 @@ Symulacja::Symulacja(QObject *parent)
     , m_wartosc_zadana(WartoscZadana(TypWartosciZadanej::SkokJednostkowy, 10.0, 4, 10.0))
     , m_zaklocenia(Zaklocenia(0.0, 0.1))
     , m_i(0)    /*, m_opoznienie(3)*/
+    , m_server(this)
     , m_socket(this)
+    , m_isListening{false}
 {
     m_klatki_symulacji = std::list<KlatkaSymulacji>();
     // m_zaklocenia = Zaklocenia(0.0, 0.1);
 
-    // connecty do socketa
+    // connecty do klienta
     QAbstractSocket::connect(&m_socket, SIGNAL(connected()),
                              this, SLOT(s_connected()));
     QAbstractSocket::connect(&m_socket, SIGNAL(disconnected()),
                              this, SIGNAL(disconnected()));
+
+    // connecty do serwera
+    QAbstractSocket::connect(&m_server, SIGNAL(newConnection()),
+                             this, SLOT(s_newClient()));
 }
 
 /* Jedna z najważniejszych funkcji w tym programi.
@@ -43,9 +49,28 @@ void Symulacja::nastepna_klatka()
     m_i++;
 }
 
+// klient
 void Symulacja::s_connected() {
     emit connected(m_IP, m_port);
 }
+
+// serwer
+void Symulacja::s_newClient() {
+    QTcpSocket *klient = m_server.nextPendingConnection();
+    m_klienci.push_back(klient);
+
+    QString adr = klient->peerAddress().toString();
+    QAbstractSocket::connect(klient, SIGNAL(disconnected()),
+                             this, SLOT(s_clientDisc()));
+
+    emit clientConnected(adr);
+}
+
+void Symulacja::s_clientDisc() {
+    m_klienci.removeAt(getIDKlienta());
+    emit clientDisconnected();
+}
+
 
 /* Settery i gettery.
  */
@@ -85,8 +110,7 @@ void Symulacja::set_zaklocenia(double srednia, double odchylenie)
 }
 
 
-// klient - połączenie z siecią
-
+// klient
 void Symulacja::connect(QString ip_addr, int port) {
     m_socket.connectToHost(ip_addr, port);
     m_IP = ip_addr;
@@ -100,3 +124,30 @@ void Symulacja::disconnect() {
 // bool Symulacja::isConnected() {
 //     return m_socket.isOpen();
 // }
+
+
+// serwer
+bool Symulacja::getIDKlienta() {
+    QTcpSocket *klient = static_cast<QTcpSocket*> (QObject::sender());
+    return m_klienci.indexOf(klient);
+}
+
+void Symulacja::startListening(int port) {
+    m_port = port;
+    m_isListening = m_server.listen(QHostAddress::Any, port);
+}
+
+void Symulacja::stopListening() {
+    m_server.close();
+    m_isListening = false;
+}
+
+bool Symulacja::isListening() {
+    return m_isListening;
+}
+
+int Symulacja::getNumOfClients() {
+    return m_klienci.size();
+}
+
+

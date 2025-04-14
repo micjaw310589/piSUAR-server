@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QTcpServer>
 #include "arx.h"
 #include "klatkasymulacji.h"
 #include "pid.h"
@@ -23,16 +24,31 @@ private:
     int m_i;
     // int m_opoznienie;
 
+    QTcpServer m_server;
+    QVector<QTcpSocket*> m_klienci;
     QTcpSocket m_socket;
     QString m_IP;
     int m_port;
+    bool m_isListening;
+
+    bool getIDKlienta();
 
 signals:
+    // klient
     void connected(QString adr, int port);
     void disconnected();
 
+    // serwer
+    void clientConnected(QString adr);
+    void clientDisconnected();
+
 private slots:
+    // klient
     void s_connected();
+
+    // serwer
+    void s_newClient();
+    void s_clientDisc();
 
 public:
     Symulacja(QObject *parent = nullptr);
@@ -48,10 +64,16 @@ public:
     void set_opoznienie(int);
     void set_zaklocenia(double srednia, double odchylenie);
 
-    // klient - połączenie z siecią
+    // klient
     void connect(QString, int);
     void disconnect();
     // bool isConnected();
+
+    // serwer
+    void startListening(int port);
+    void stopListening();
+    bool isListening();
+    int getNumOfClients();
 };
 
 #endif // SYMULACJA_H

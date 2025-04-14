@@ -10,6 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->lblStatus->setText("Offline");
+    ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
+
 
     /* Inicjalizacja i podpięcie timera
      */
@@ -419,19 +422,102 @@ void MainWindow::accepted_dialog_arx()
 
 void MainWindow::on_btnPolacz_clicked()
 {
-    QString adres = sklejAdresIP();
-    int port = ui->spinBox_Port->value();
-    if (!sprawdzPoprawnosc(adres, port))
-        return;
-    resetujKlienta();
-    symulacja->connect(adres, port);
+    if (ui->ckbServer->checkState() == Qt::Checked) {
+        int port = ui->spinBox_Port->value();
+        if (!sprawdzPoprawnosc(port))
+            return;
+
+        resetujSerwer();
+        symulacja->startListening(port);
+
+        if(!symulacja->isListening()) {
+            ui->lblStatus->setText("Błąd serwera!");
+            ui->lblStatus->setStyleSheet("QLabel { color: red; }");
+        }
+        else {
+            ui->ckbServer->setEnabled(false);
+            ui->spinBox_Port->setEnabled(false);
+            ui->btnPolacz->setEnabled(false);
+            ui->btnRozlacz->setEnabled(true);
+            ui->lblStatus->setText("Nasłuch na p. " + QString::number(port));
+            ui->lblStatus->setStyleSheet("QLabel { color: green; }");
+        }
+    }
+    else {
+        QString adres = sklejAdresIP();
+        int port = ui->spinBox_Port->value();
+
+        if (!sprawdzPoprawnosc(adres, port))
+            return;
+
+        resetujKlienta();
+        symulacja->connect(adres, port);
+
+        ui->ckbServer->setEnabled(false);
+        ui->txtIP_A->setEnabled(false);
+        ui->txtIP_B->setEnabled(false);
+        ui->txtIP_C->setEnabled(false);
+        ui->txtIP_D->setEnabled(false);
+        ui->spinBox_Port->setEnabled(false);
+        ui->btnRozlacz->setEnabled(true);
+        ui->btnPolacz->setEnabled(false);
+    }
 }
 
 void MainWindow::on_btnRozlacz_clicked()
 {
-    symulacja->disconnect();
+    if (ui->ckbServer->checkState() == Qt::Checked) {
+        if (symulacja->isListening()) {
+            symulacja->stopListening();
+            ui->btnRozlacz->setEnabled(false);
+            ui->btnPolacz->setEnabled(true);
+            ui->ckbServer->setEnabled(true);
+            ui->spinBox_Port->setEnabled(true);
+            ui->lblStatus->setText("Offline");
+            ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
+        }
+    }
+    else {
+        symulacja->disconnect();
+
+        ui->ckbServer->setEnabled(true);
+        ui->txtIP_A->setEnabled(true);
+        ui->txtIP_B->setEnabled(true);
+        ui->txtIP_C->setEnabled(true);
+        ui->txtIP_D->setEnabled(true);
+        ui->spinBox_Port->setEnabled(true);
+        ui->btnRozlacz->setEnabled(false);
+        ui->btnPolacz->setEnabled(true);
+    }
 }
 
+void MainWindow::on_ckbServer_checkStateChanged(const Qt::CheckState &arg1)
+{
+    if (arg1 == Qt::CheckState(Qt::Checked)) {
+        ui->txtIP_A->setEnabled(false);
+        ui->txtIP_B->setEnabled(false);
+        ui->txtIP_C->setEnabled(false);
+        ui->txtIP_D->setEnabled(false);
+        ui->btnPolacz->setText("Start");
+        ui->btnRozlacz->setText("Stop");
+        ui->btnPolacz->setEnabled(true);
+        ui->btnRozlacz->setEnabled(false);
+    }
+    else {
+        ui->txtIP_A->setEnabled(true);
+        ui->txtIP_B->setEnabled(true);
+        ui->txtIP_C->setEnabled(true);
+        ui->txtIP_D->setEnabled(true);
+        ui->btnPolacz->setText("Połącz");
+        ui->btnRozlacz->setText("Rozłącz");
+        ui->btnPolacz->setEnabled(true);
+        ui->btnRozlacz->setEnabled(false);
+    }
+}
+
+
+
+// klient
 
 void MainWindow::s_connected(QString adr, int port) {
     // zablokuj wszystkie kontrolki poza PID
@@ -447,6 +533,7 @@ void MainWindow::s_connected(QString adr, int port) {
 }
 
 void MainWindow::s_disconnected() {
+    // odblokuj wszystkie kontrolki
     ui->txtIP_A->setEnabled(true);
     ui->txtIP_B->setEnabled(true);
     ui->txtIP_C->setEnabled(true);
@@ -456,6 +543,20 @@ void MainWindow::s_disconnected() {
 
     ui->lblStatus->setText("Offline");
     ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
+}
+
+// serwer
+
+void MainWindow::s_clientConnected(QString adr) {
+    // zablokuj wszystkie kontrolki poza ARX
+    ui->lblStatus->setText("Klient " + adr + " połączony");
+    ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
+}
+
+void MainWindow::s_clientDisconnected() {
+    // odblokuj wszystkie kontrolki
+    ui->lblStatus->setText("Nasłuch na p. " + QString::number(ui->spinBox_Port->value()));
+    ui->lblStatus->setStyleSheet("QLabel { color: green; }");
 }
 
 
@@ -471,12 +572,19 @@ bool MainWindow::sprawdzPoprawnosc(QString IP, int port) {
     QHostAddress adres(IP);
 
     if (adres.protocol() != QAbstractSocket::IPv4Protocol) {
-        ui->statusbar->showMessage("Nieprawidłowy adres IP!");
+        ui->lblStatus->setText("Nieprawidłowy adres IP!");
+        ui->lblStatus->setStyleSheet("QLabel { color: red; }");
         return false;
     }
 
+    return sprawdzPoprawnosc(port);
+}
+
+bool MainWindow::sprawdzPoprawnosc(int port) {
+
     if (port < 0 || 65535 < port) {
         ui->statusbar->showMessage("Nieprawidłowy port!");
+        ui->lblStatus->setStyleSheet("QLabel { color: red; }");
         return false;
     }
 
@@ -488,6 +596,7 @@ void MainWindow::resetujKlienta() {
         symulacja->disconnect();
         delete symulacja;
     }
+
     symulacja = new Symulacja(this);
 
     connect(symulacja, SIGNAL(connected(QString,int)),
@@ -496,4 +605,17 @@ void MainWindow::resetujKlienta() {
             this, SLOT(s_disconnected()));
 }
 
+void MainWindow::resetujSerwer() {
+    if (symulacja != nullptr) {
+        symulacja->stopListening();
+        delete symulacja;
+    }
+
+    symulacja = new Symulacja(this);
+
+    connect(symulacja, SIGNAL(clientConnected(QString)),
+            this, SLOT(s_clientConnected(QString)));
+    connect(symulacja, SIGNAL(clientDisconnected()),
+            this, SLOT(s_clientDisconnected()));
+}
 
