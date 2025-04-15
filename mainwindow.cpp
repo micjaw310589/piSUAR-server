@@ -457,17 +457,6 @@ void MainWindow::on_btnPolacz_clicked()
         resetujKlienta();
         symulacja->connect(adres, port);
 
-        ui->ckbServer->setEnabled(false);
-        ui->txtIP_A->setEnabled(false);
-        ui->txtIP_B->setEnabled(false);
-        ui->txtIP_C->setEnabled(false);
-        ui->txtIP_D->setEnabled(false);
-        ui->spinBox_Port->setEnabled(false);
-        ui->btnRozlacz->setEnabled(true);
-        ui->btnPolacz->setEnabled(false);
-
-        ui->grpSygnal->setVisible(false);
-        ui->grpPID->setVisible(false);
     }
 }
 
@@ -533,26 +522,32 @@ void MainWindow::on_ckbServer_checkStateChanged(const Qt::CheckState &arg1)
 // klient
 
 void MainWindow::s_connected(QString adr, int port) {
-    // zablokuj wszystkie kontrolki poza PID
     ui->txtIP_A->setEnabled(false);
     ui->txtIP_B->setEnabled(false);
     ui->txtIP_C->setEnabled(false);
     ui->txtIP_D->setEnabled(false);
     ui->spinBox_Port->setEnabled(false);
     ui->ckbServer->setEnabled(false);
+    ui->btnRozlacz->setEnabled(true);
+    ui->btnPolacz->setEnabled(false);
+    ui->grpSygnal->setVisible(false);
+    ui->grpPID->setVisible(false);
 
     ui->lblStatus->setText("Połączono z " + adr + ":" + QString::number(port));
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
 }
 
 void MainWindow::s_disconnected() {
-    // odblokuj wszystkie kontrolki
     ui->txtIP_A->setEnabled(true);
     ui->txtIP_B->setEnabled(true);
     ui->txtIP_C->setEnabled(true);
     ui->txtIP_D->setEnabled(true);
     ui->spinBox_Port->setEnabled(true);
     ui->ckbServer->setEnabled(true);
+    ui->btnRozlacz->setEnabled(false);
+    ui->btnPolacz->setEnabled(true);
+    ui->grpSygnal->setVisible(true);
+    ui->grpPID->setVisible(true);
 
     ui->lblStatus->setText("Offline");
     ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");

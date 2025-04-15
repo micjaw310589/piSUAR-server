@@ -24,11 +24,13 @@ private:
     int m_i;
     // int m_opoznienie;
 
-    QTcpServer m_server;
-    QTcpSocket* m_con_klient;
+    int m_port;
+
     QTcpSocket m_socket;
     QString m_IP;
-    int m_port;
+
+    QTcpServer m_server;
+    QTcpSocket* m_con_klient;
     bool m_isListening;
 
 signals:
