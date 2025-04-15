@@ -38,7 +38,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
             <item>
-             <widget class="QFrame" name="verticalFrame1">
+             <widget class="QFrame" name="grpSygnal">
               <property name="frameShape">
                <enum>QFrame::Shape::StyledPanel</enum>
               </property>
@@ -195,7 +195,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="verticalFrame">
+             <widget class="QFrame" name="grpZaklARX">
               <property name="frameShape">
                <enum>QFrame::Shape::StyledPanel</enum>
               </property>
@@ -282,7 +282,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="verticalFrame3">
+             <widget class="QFrame" name="grpPID">
               <property name="frameShape">
                <enum>QFrame::Shape::StyledPanel</enum>
               </property>
@@ -410,7 +410,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="verticalFrame2">
+             <widget class="QFrame" name="grpARX">
               <property name="frameShape">
                <enum>QFrame::Shape::StyledPanel</enum>
               </property>
@@ -818,6 +818,9 @@
            <widget class="QSpinBox" name="spinBox_Port">
             <property name="maximum">
              <number>65535</number>
+            </property>
+            <property name="value">
+             <number>23</number>
             </property>
            </widget>
           </item>

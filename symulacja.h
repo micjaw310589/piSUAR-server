@@ -25,13 +25,11 @@ private:
     // int m_opoznienie;
 
     QTcpServer m_server;
-    QVector<QTcpSocket*> m_klienci;
+    QTcpSocket* m_con_klient;
     QTcpSocket m_socket;
     QString m_IP;
     int m_port;
     bool m_isListening;
-
-    bool getIDKlienta();
 
 signals:
     // klient
@@ -67,13 +65,11 @@ public:
     // klient
     void connect(QString, int);
     void disconnect();
-    // bool isConnected();
 
     // serwer
     void startListening(int port);
     void stopListening();
     bool isListening();
-    int getNumOfClients();
 };
 
 #endif // SYMULACJA_H

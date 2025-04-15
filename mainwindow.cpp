@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->btnRozlacz->setEnabled(false);
     ui->lblStatus->setText("Offline");
     ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
 
@@ -441,6 +442,9 @@ void MainWindow::on_btnPolacz_clicked()
             ui->btnRozlacz->setEnabled(true);
             ui->lblStatus->setText("Nasłuch na p. " + QString::number(port));
             ui->lblStatus->setStyleSheet("QLabel { color: green; }");
+
+            ui->grpARX->setVisible(false);
+            ui->grpZaklARX->setVisible(false);
         }
     }
     else {
@@ -461,6 +465,9 @@ void MainWindow::on_btnPolacz_clicked()
         ui->spinBox_Port->setEnabled(false);
         ui->btnRozlacz->setEnabled(true);
         ui->btnPolacz->setEnabled(false);
+
+        ui->grpSygnal->setVisible(false);
+        ui->grpPID->setVisible(false);
     }
 }
 
@@ -475,6 +482,9 @@ void MainWindow::on_btnRozlacz_clicked()
             ui->spinBox_Port->setEnabled(true);
             ui->lblStatus->setText("Offline");
             ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
+
+            ui->grpARX->setVisible(true);
+            ui->grpZaklARX->setVisible(true);
         }
     }
     else {
@@ -488,6 +498,9 @@ void MainWindow::on_btnRozlacz_clicked()
         ui->spinBox_Port->setEnabled(true);
         ui->btnRozlacz->setEnabled(false);
         ui->btnPolacz->setEnabled(true);
+
+        ui->grpSygnal->setVisible(true);
+        ui->grpPID->setVisible(true);
     }
 }
 
@@ -498,8 +511,8 @@ void MainWindow::on_ckbServer_checkStateChanged(const Qt::CheckState &arg1)
         ui->txtIP_B->setEnabled(false);
         ui->txtIP_C->setEnabled(false);
         ui->txtIP_D->setEnabled(false);
-        ui->btnPolacz->setText("Start");
-        ui->btnRozlacz->setText("Stop");
+        ui->btnPolacz->setText("Nasłuchuj");
+        ui->btnRozlacz->setText("Przerwij");
         ui->btnPolacz->setEnabled(true);
         ui->btnRozlacz->setEnabled(false);
     }

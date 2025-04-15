@@ -57,7 +57,7 @@ void Symulacja::s_connected() {
 // serwer
 void Symulacja::s_newClient() {
     QTcpSocket *klient = m_server.nextPendingConnection();
-    m_klienci.push_back(klient);
+    m_con_klient = klient;
 
     QString adr = klient->peerAddress().toString();
     QAbstractSocket::connect(klient, SIGNAL(disconnected()),
@@ -67,7 +67,8 @@ void Symulacja::s_newClient() {
 }
 
 void Symulacja::s_clientDisc() {
-    m_klienci.removeAt(getIDKlienta());
+    delete m_con_klient;
+    m_con_klient = nullptr;
     emit clientDisconnected();
 }
 
@@ -121,20 +122,11 @@ void Symulacja::disconnect() {
     m_socket.close();
 }
 
-// bool Symulacja::isConnected() {
-//     return m_socket.isOpen();
-// }
-
 
 // serwer
-bool Symulacja::getIDKlienta() {
-    QTcpSocket *klient = static_cast<QTcpSocket*> (QObject::sender());
-    return m_klienci.indexOf(klient);
-}
-
 void Symulacja::startListening(int port) {
     m_port = port;
-    m_isListening = m_server.listen(QHostAddress::Any, port);
+    m_isListening = m_server.listen(QHostAddress::AnyIPv4, port);
 }
 
 void Symulacja::stopListening() {
@@ -145,9 +137,4 @@ void Symulacja::stopListening() {
 bool Symulacja::isListening() {
     return m_isListening;
 }
-
-int Symulacja::getNumOfClients() {
-    return m_klienci.size();
-}
-
 
