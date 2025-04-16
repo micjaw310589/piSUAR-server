@@ -22,7 +22,7 @@ private:
     WartoscZadana m_wartosc_zadana;
     Zaklocenia m_zaklocenia;
     int m_i;
-    // int m_opoznienie;
+
 
     int m_port;
 
