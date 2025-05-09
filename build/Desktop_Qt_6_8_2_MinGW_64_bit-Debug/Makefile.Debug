@@ -1006,6 +1006,8 @@ debug/moc_mainwindow.cpp: ../../mainwindow.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qabstractsocket.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qhostaddress.h \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/QTcpServer \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtcpserver.h \
 		../../arx.h \
 		../../klatkasymulacji.h \
 		../../pid.h \
@@ -1141,6 +1143,8 @@ debug/moc_symulacja.cpp: ../../symulacja.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtCore/qvarlengtharray.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtCore/qvariant.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtCore/q23utility.h \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/QTcpServer \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtcpserver.h \
 		../../arx.h \
 		../../klatkasymulacji.h \
 		../../pid.h \
@@ -2049,6 +2053,8 @@ debug/main.o: ../../main.cpp ../../mainwindow.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qabstractsocket.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qhostaddress.h \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/QTcpServer \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtcpserver.h \
 		../../arx.h \
 		../../klatkasymulacji.h \
 		../../pid.h \
@@ -2727,6 +2733,8 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qabstractsocket.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qhostaddress.h \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/QTcpServer \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtcpserver.h \
 		../../arx.h \
 		../../klatkasymulacji.h \
 		../../pid.h \
@@ -2864,6 +2872,8 @@ debug/symulacja.o: ../../symulacja.cpp ../../symulacja.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtCore/qvarlengtharray.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtCore/qvariant.h \
 		../../../../../../Qt/6.8.2/mingw_64/include/QtCore/q23utility.h \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/QTcpServer \
+		../../../../../../Qt/6.8.2/mingw_64/include/QtNetwork/qtcpserver.h \
 		../../arx.h \
 		../../klatkasymulacji.h \
 		../../pid.h \

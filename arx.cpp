@@ -41,11 +41,11 @@ double ARX::operator()(double nowe_u, double z)
 
 /* Zwraca poprzedni zapamiętany wynik.
  */
-double ARX::get_poprz_y()
-{
-    if (m_historia_y.size() == 0) return 0.0;
-    return m_historia_y.at(m_historia_y.size() - 1);
-}
+// double ARX::get_poprz_y()
+// {
+//     if (m_historia_y.size() == 0) return 0.0;
+//     return m_historia_y.at(m_historia_y.size() - 1);
+// }
 
 /* Do ustawiania wszystkich 3 pozycji werktora A.
  */

@@ -8,6 +8,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , clientConnected{false}
 {
     ui->setupUi(this);
     ui->btnRozlacz->setEnabled(false);
@@ -230,7 +231,12 @@ MainWindow::~MainWindow()
  */
 void MainWindow::on_startButton_clicked()
 {
-    zaktualizuj_wartosci();
+    if (isConnected()) {
+        zaktualizuj_wartosci(false);
+    }
+    else {
+        zaktualizuj_wartosci();
+    }
     symulacja->set_opoznienie(ui->opoznienie->value()); // Nadpisanie opóźnienia dla nowej symulacji
     timer->start(ODSWIEZANIE);
 }
@@ -250,7 +256,7 @@ void MainWindow::on_resetButton_clicked()
 {
     timer->stop();
     symulacja->set_i(0);                                // Reset i klatki symulacji
-    symulacja->set_klatki_symulacji(std::list<KlatkaSymulacji>()); // Nadpisanie listy
+    symulacja->set_klatki_symulacji(std::vector<KlatkaSymulacji>()); // Nadpisanie listy
     wykres_wartosci_zadanej->clear();
     wykres_uchybu->clear();
     wykres_pid->clear();
@@ -421,6 +427,8 @@ void MainWindow::accepted_dialog_arx()
     ui->opoznienie->setValue(opoznienie);
 }
 
+
+
 void MainWindow::on_btnPolacz_clicked()
 {
     if (ui->ckbServer->checkState() == Qt::Checked) {
@@ -442,9 +450,6 @@ void MainWindow::on_btnPolacz_clicked()
             ui->btnRozlacz->setEnabled(true);
             ui->lblStatus->setText("Nasłuch na p. " + QString::number(port));
             ui->lblStatus->setStyleSheet("QLabel { color: green; }");
-
-            ui->grpARX->setVisible(false);
-            ui->grpZaklARX->setVisible(false);
         }
     }
     else {
@@ -471,9 +476,6 @@ void MainWindow::on_btnRozlacz_clicked()
             ui->spinBox_Port->setEnabled(true);
             ui->lblStatus->setText("Offline");
             ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
-
-            ui->grpARX->setVisible(true);
-            ui->grpZaklARX->setVisible(true);
         }
     }
     else {
@@ -487,9 +489,6 @@ void MainWindow::on_btnRozlacz_clicked()
         ui->spinBox_Port->setEnabled(true);
         ui->btnRozlacz->setEnabled(false);
         ui->btnPolacz->setEnabled(true);
-
-        ui->grpSygnal->setVisible(true);
-        ui->grpPID->setVisible(true);
     }
 }
 
@@ -530,11 +529,14 @@ void MainWindow::s_connected(QString adr, int port) {
     ui->ckbServer->setEnabled(false);
     ui->btnRozlacz->setEnabled(true);
     ui->btnPolacz->setEnabled(false);
-    ui->grpSygnal->setVisible(false);
-    ui->grpPID->setVisible(false);
 
+    ui->grpARX->setVisible(false);
+    ui->grpZaklARX->setVisible(false);
+    
     ui->lblStatus->setText("Połączono z " + adr + ":" + QString::number(port));
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
+
+    clientConnected = true;
 }
 
 void MainWindow::s_disconnected() {
@@ -546,25 +548,39 @@ void MainWindow::s_disconnected() {
     ui->ckbServer->setEnabled(true);
     ui->btnRozlacz->setEnabled(false);
     ui->btnPolacz->setEnabled(true);
-    ui->grpSygnal->setVisible(true);
-    ui->grpPID->setVisible(true);
+
+    ui->grpARX->setVisible(true);
+    ui->grpZaklARX->setVisible(true);
 
     ui->lblStatus->setText("Offline");
     ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
+
+    clientConnected = false;
 }
+
 
 // serwer
 
 void MainWindow::s_clientConnected(QString adr) {
-    // zablokuj wszystkie kontrolki poza ARX
+    ui->grpSygnal->setVisible(false);
+    ui->grpPID->setVisible(false);
+
     ui->lblStatus->setText("Klient " + adr + " połączony");
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
 }
 
 void MainWindow::s_clientDisconnected() {
-    // odblokuj wszystkie kontrolki
-    ui->lblStatus->setText("Nasłuch na p. " + QString::number(ui->spinBox_Port->value()));
-    ui->lblStatus->setStyleSheet("QLabel { color: green; }");
+    ui->grpSygnal->setVisible(true);
+    ui->grpPID->setVisible(true);
+
+    if (!symulacja->isListening()){
+        ui->lblStatus->setText("Offline");
+        ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
+    }
+    else {
+        ui->lblStatus->setText("Nasłuch na p. " + QString::number(ui->spinBox_Port->value()));
+        ui->lblStatus->setStyleSheet("QLabel { color: green; }");
+    }
 }
 
 
@@ -602,10 +618,10 @@ bool MainWindow::sprawdzPoprawnosc(int port) {
 void MainWindow::resetujKlienta() {
     if (symulacja != nullptr) {
         symulacja->disconnect();
-        delete symulacja;
+        // delete symulacja;
     }
 
-    symulacja = new Symulacja(this);
+    // symulacja = new Symulacja(this);
 
     connect(symulacja, SIGNAL(connected(QString,int)),
             this, SLOT(s_connected(QString,int)));
@@ -627,3 +643,6 @@ void MainWindow::resetujSerwer() {
             this, SLOT(s_clientDisconnected()));
 }
 
+bool MainWindow::isConnected() {
+    return clientConnected;
+}

@@ -81,5 +81,7 @@ private:
     bool sprawdzPoprawnosc(int port);
     void resetujKlienta();
     void resetujSerwer();
+    bool clientConnected;
+    bool isConnected();
 };
 #endif // MAINWINDOW_H

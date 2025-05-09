@@ -1,0 +1,13 @@
+release/arx.o
+release/dialogarx.o
+release/generator.o
+release/klatkasymulacji.o
+release/main.o
+release/mainwindow.o
+release/pid.o
+release/symulacja.o
+release/wartosczadana.o
+release/zaklocenia.o
+release/moc_dialogarx.o
+release/moc_mainwindow.o
+release/moc_symulacja.o

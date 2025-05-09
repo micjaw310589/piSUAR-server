@@ -21,7 +21,7 @@ public:
     ARX(double, double, double, double, double, double, int);
     double operator()(double u,
                       double z); // Dokładnie które wartości będą podane zadecyduje symulacja
-    double get_poprz_y();
+    // double get_poprz_y();
     void set_a(double, double, double);
     void set_b(double, double, double);
     void set_opoznienie(int);
