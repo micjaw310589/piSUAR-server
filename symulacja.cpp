@@ -1,5 +1,7 @@
 #include "symulacja.h"
 #include "wartosczadana.h"
+#include <iostream>
+#include <iomanip>
 
 Symulacja::Symulacja(QObject *parent)
     : QObject{parent}
@@ -24,10 +26,13 @@ Symulacja::Symulacja(QObject *parent)
                              this, SIGNAL(disconnected()));
     QAbstractSocket::connect(&m_socket, SIGNAL(readyRead()),
                              this, SLOT(s_receiveFromServer()));
+    // QAbstractSocket::connect(&m_socket, SIGNAL(readyRead()),
+    //                          parent, SLOT(s_drawSeries()));
 
     // connecty do serwera
     QAbstractSocket::connect(&m_server, SIGNAL(newConnection()),
                              this, SLOT(s_newClient()));
+
 }
 
 /* Jedna z najważniejszych funkcji w tym programi.
@@ -36,6 +41,7 @@ Symulacja::Symulacja(QObject *parent)
  */
 void Symulacja::nastepna_klatka()
 {
+    // qDebug() << "next frame";
     // jeśli aplikacja jest offline lub jest połączona jako klient
     if (m_con_klient == nullptr) {
 
@@ -46,7 +52,31 @@ void Symulacja::nastepna_klatka()
         m_nowe_u = m_pid(m_nowe_e);
 
         if (isConnected()){
-            sendToServer(m_nowe_u);
+            // qDebug() << "send to server";
+
+            // KlatkaSymulacji nowa_klatka = KlatkaSymulacji(m_nowe_w,
+            //                                               m_nowe_e,
+            //                                               m_nowe_u,
+            //                                               0.0,
+            //                                               m_nowe_z,
+            //                                               m_pid.get_poprz_p(),
+            //                                               m_pid.get_poprz_i(),
+            //                                               m_pid.get_poprz_d());
+            // m_klatki_symulacji.push_back(nowa_klatka);
+            if (!m_klatki_symulacji.empty())
+                sendToServer(m_klatki_symulacji.back());
+            else {
+                KlatkaSymulacji nowa_klatka = KlatkaSymulacji(m_nowe_w,
+                                                              m_nowe_e,
+                                                              m_nowe_u,
+                                                              0.0,
+                                                              m_nowe_z,
+                                                              m_pid.get_poprz_p(),
+                                                              m_pid.get_poprz_i(),
+                                                              m_pid.get_poprz_d());
+                sendToServer(nowa_klatka);
+            }
+
         }
         else {
 
@@ -68,35 +98,39 @@ void Symulacja::nastepna_klatka()
 }
 
 // klient
-void Symulacja::sendToServer(double u_to_send) {
-    QByteArray u_serial = QByteArray::number(u_to_send);
-    if (isConnected())
-        m_socket.write(u_serial);
+void Symulacja::sendToServer(const KlatkaSymulacji& data_to_send) {
+    if (!isConnected())
+        return;     // wyrzucić wyjątek ??
+
+    QByteArray clientData;
+    const short SIZE = sizeof(KlatkaSymulacji);  // nadmierne przesyłanie danych - nie trzeba ARX (7)
+    clientData = QByteArray::fromRawData(reinterpret_cast<const char*>(&data_to_send), SIZE);
+
+    m_socket.write(clientData);
 }
 
 
 // klient
 void Symulacja::s_connected() {
-    qDebug() << "client connected";
     m_isConnectedToServer = true;
     emit connected(m_IP, m_port);
 }
 
 void Symulacja::s_receiveFromServer() {
-    double nowe_y = m_socket.readAll().toDouble();
+    double new_y = m_socket.readAll().toDouble();
+    // qDebug() << new_y;
     KlatkaSymulacji nowa_klatka = KlatkaSymulacji(m_nowe_w,
                                                   m_nowe_e,
                                                   m_nowe_u,
-                                                  nowe_y + m_nowe_z,
+                                                  new_y + m_nowe_z,
                                                   m_nowe_z,
                                                   m_pid.get_poprz_p(),
                                                   m_pid.get_poprz_i(),
                                                   m_pid.get_poprz_d());
     m_klatki_symulacji.push_back(nowa_klatka);
-    m_poprz_y = nowe_y;
+    m_poprz_y = new_y;
     m_i++;
 
-    qDebug() << nowe_y;
 }
 
 // serwer
@@ -105,9 +139,9 @@ void Symulacja::s_newClient() {
     m_con_klient = klient;
 
     QString adr = klient->peerAddress().toString();
-    QAbstractSocket::connect(klient, SIGNAL(disconnected()),
+    QAbstractSocket::connect(m_con_klient, SIGNAL(disconnected()),
                              this, SLOT(s_clientDisc()));
-    QAbstractSocket::connect(klient, SIGNAL(readyRead()),
+    QAbstractSocket::connect(m_con_klient, SIGNAL(readyRead()),
                              this, SLOT(s_receiveFromClient()));
 
     emit clientConnected(adr);
@@ -120,11 +154,23 @@ void Symulacja::s_clientDisc() {
 }
 
 void Symulacja::s_receiveFromClient() {
-    double u = m_con_klient->readAll().toDouble();
-    double nowe_y = m_arx(u, 0.0);
-    QByteArray nowe_y_serial = QByteArray::number(nowe_y);
-    if (m_con_klient != nullptr)
-        m_con_klient->write(nowe_y_serial);
+
+    if (m_con_klient == nullptr)
+        return;     // wyrzucić wyjątek ??
+
+    QByteArray received_data = m_con_klient->readAll();
+    KlatkaSymulacji deserialized_data;
+    std::memcpy(&deserialized_data, received_data, sizeof(KlatkaSymulacji));
+
+    double new_y = m_arx(deserialized_data.get_u(), deserialized_data.get_z());
+    // qDebug() << new_y;
+
+    QByteArray new_data_serialized;
+    // new_data_serialized.setRawData(QByteArray::number(new_y), sizeof(new_y));
+    // new_data_serialized = QByteArray::fromRawData(QByteArray::number(new_y), sizeof(new_y));
+    new_data_serialized = QByteArray::number(new_y);
+
+    m_con_klient->write(new_data_serialized);
 }
 
 
@@ -177,7 +223,7 @@ void Symulacja::connect(QString ip_addr, int port) {
 void Symulacja::disconnect() {
     m_socket.close();
     m_isConnectedToServer = false;
-    qDebug() << "client disconnect";
+    // qDebug() << "client disconnect";
 }
 
 bool Symulacja::isConnected() {

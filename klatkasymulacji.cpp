@@ -18,6 +18,17 @@ KlatkaSymulacji::KlatkaSymulacji(double w_zadana,
     , m_d(nowe_d)
 {}
 
+KlatkaSymulacji::KlatkaSymulacji()
+    : m_w(0.0)
+    , m_z(0.0)
+    , m_e(0.0)
+    , m_u(0.0)
+    , m_y(0.0)
+    , m_p(0.0)
+    , m_i(0.0)
+    , m_d(0.0)
+{}
+
 
 /* Settery i gettery.
  * Nie ma większej filozofii.
@@ -87,3 +98,6 @@ void KlatkaSymulacji::set_d(double wartosc)
 {
     m_d = wartosc;
 }
+
+
+

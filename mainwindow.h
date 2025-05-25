@@ -51,6 +51,7 @@ private slots:
     // serwer
     void s_clientConnected(QString);
     void s_clientDisconnected();
+    void s_drawSeries();
 
 private:
     Ui::MainWindow *ui;

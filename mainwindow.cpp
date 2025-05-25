@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lblStatus->setText("Offline");
     ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
 
-
     /* Inicjalizacja i podpięcie timera
      */
     timer = new QTimer(this);
@@ -25,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     symulacja = new Symulacja(this);
     /* Definicje poszczególnych linii wykresów
      */
+
     wykres_wartosci_zadanej = new QLineSeries;
     wykres_wartosci_zadanej->setName("wartość zadana");
     wykres_uchybu = new QLineSeries;
@@ -231,12 +231,7 @@ MainWindow::~MainWindow()
  */
 void MainWindow::on_startButton_clicked()
 {
-    if (isConnected()) {
-        zaktualizuj_wartosci(false);
-    }
-    else {
-        zaktualizuj_wartosci();
-    }
+    zaktualizuj_wartosci();
     symulacja->set_opoznienie(ui->opoznienie->value()); // Nadpisanie opóźnienia dla nowej symulacji
     timer->start(ODSWIEZANIE);
 }
@@ -565,6 +560,8 @@ void MainWindow::s_clientConnected(QString adr) {
     ui->grpSygnal->setVisible(false);
     ui->grpPID->setVisible(false);
 
+    chart_arx->removeSeries(wykres_wartosci_zadanej);
+
     ui->lblStatus->setText("Klient " + adr + " połączony");
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
 }
@@ -572,6 +569,8 @@ void MainWindow::s_clientConnected(QString adr) {
 void MainWindow::s_clientDisconnected() {
     ui->grpSygnal->setVisible(true);
     ui->grpPID->setVisible(true);
+
+    chart_arx->addSeries(wykres_wartosci_zadanej);
 
     if (!symulacja->isListening()){
         ui->lblStatus->setText("Offline");
@@ -582,6 +581,34 @@ void MainWindow::s_clientDisconnected() {
         ui->lblStatus->setStyleSheet("QLabel { color: green; }");
     }
 }
+
+void MainWindow::s_drawSeries() {
+    qDebug() << "drawChartSeries";
+    wykres_arx->clear();
+
+    int offset = 0;
+    double wartosc_min_arx = 0.0;
+    double wartosc_max_arx = 0.0;
+
+    if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
+        offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
+    }
+
+    chart_arx->axes(Qt::Horizontal).first()->setRange(offset, symulacja->get_klatki_symulacji()->size());
+
+    auto iterator_klatka_symulacji = symulacja->get_klatki_symulacji()->begin();
+    std::advance(iterator_klatka_symulacji, offset);
+
+    for (size_t i = offset; i < symulacja->get_klatki_symulacji()->size(); i++) {
+        wykres_arx->append(i, iterator_klatka_symulacji->get_y());
+        wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_y());
+        wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_y());
+        std::advance(iterator_klatka_symulacji, 1);
+    }
+
+    chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
+}
+
 
 
 QString MainWindow::sklejAdresIP() {

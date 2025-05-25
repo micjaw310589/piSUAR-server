@@ -1,6 +1,8 @@
 #ifndef KLATKASYMULACJI_H
 #define KLATKASYMULACJI_H
 
+#include <functional>
+
 class KlatkaSymulacji
 {
 private:
@@ -15,6 +17,7 @@ private:
 
 public:
     KlatkaSymulacji(double, double, double, double, double, double, double, double);
+    KlatkaSymulacji();
 
     double get_w();
     void set_w(double);

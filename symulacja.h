@@ -36,7 +36,8 @@ private:
     QTcpSocket m_socket;
     QString m_IP;
     bool m_isConnectedToServer;
-    void sendToServer(double u_to_send);
+    // klient
+    void sendToServer(const KlatkaSymulacji& data_to_send);
 
     // serwer
     QTcpServer m_server;
@@ -77,11 +78,13 @@ public:
     void set_zaklocenia(double srednia, double odchylenie);
 
     // klient
+    const QTcpSocket* getKlient() { return &m_socket; }
     void connect(QString, int);
     void disconnect();
     bool isConnected();
 
     // serwer
+    // const QTcpSocket* getConKlient() { return m_con_klient; }
     void startListening(int port);
     void stopListening();
     bool isListening();
