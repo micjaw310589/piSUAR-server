@@ -59,6 +59,7 @@ private:
     Ui::MainWindow *ui;
     int ODSWIEZANIE = 150;   // Co tyle milisekund będą się wywoływać następne klatki animacji
     const int ZAKRES_WYKRESU = 40; // Im mniej, tym sprawniej działa, bo pętla ma mniej do zrobienia
+    unsigned long long m_last_klatki_symulacji_size;
     QTimer *timer = nullptr;
     QLineSeries *wykres_wartosci_zadanej;
     // QLineSeries *wykres_zakolcen;

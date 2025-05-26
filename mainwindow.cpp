@@ -8,6 +8,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_last_klatki_symulacji_size{0}
     , clientConnected{false}
 {
     ui->setupUi(this);
@@ -94,6 +95,13 @@ MainWindow::MainWindow(QWidget *parent)
 // Tutaj przetwarzana jest każda nowa klatka symulacji
 void MainWindow::timer_timeout_slot()
 {
+    if(symulacja->get_klatki_symulacji()->size() == m_last_klatki_symulacji_size) {
+        qDebug() << "ZA SZYBKO";
+    }
+    else {
+        m_last_klatki_symulacji_size = symulacja->get_klatki_symulacji()->size();
+    }
+
     // zaktualizuj_wartosci(false);  // Tutaj ustawiam aktualizowanie się wartości z lewego panelu, z wyłączeniem ARX
     zaktualizuj_wartosci();
     ODSWIEZANIE = ui->interwal->value();  // Zczytuję z dolnego panelu jak często ma się symulacja wywoływać

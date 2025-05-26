@@ -557,7 +557,7 @@ public:
 
         interwal = new QSpinBox(centralwidget);
         interwal->setObjectName("interwal");
-        interwal->setMinimum(100);
+        interwal->setMinimum(10);
         interwal->setMaximum(2000);
         interwal->setSingleStep(25);
 

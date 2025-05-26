@@ -118,9 +118,9 @@ void Symulacja::s_receiveFromServer() {
                                                   m_pid.get_poprz_p(),
                                                   m_pid.get_poprz_i(),
                                                   m_pid.get_poprz_d());
-    m_klatki_symulacji.push_back(nowa_klatka);
     m_poprz_y = new_y;
     m_i++;
+    m_klatki_symulacji.push_back(nowa_klatka);
 
 }
 
@@ -154,7 +154,7 @@ void Symulacja::s_receiveFromClient() {
     std::memcpy(&deserialized_data, received_data, sizeof(KlatkaSymulacji));
 
     emit updateSettings(true);
-    qDebug() << deserialized_data.get_z();
+    // qDebug() << deserialized_data.get_z();
     double new_y = m_arx(deserialized_data.get_u(), deserialized_data.get_z());
     emit sent();
 

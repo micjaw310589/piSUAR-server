@@ -633,7 +633,7 @@
           <item>
            <widget class="QSpinBox" name="interwal">
             <property name="minimum">
-             <number>100</number>
+             <number>10</number>
             </property>
             <property name="maximum">
              <number>2000</number>
