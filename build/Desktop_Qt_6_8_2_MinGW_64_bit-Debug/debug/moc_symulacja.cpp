@@ -45,6 +45,9 @@ static constexpr auto qt_meta_stringdata_ZN9SymulacjaE = QtMocHelpers::stringDat
     "disconnected",
     "clientConnected",
     "clientDisconnected",
+    "sent",
+    "updateSettings",
+    "aktualizuj_arx",
     "s_connected",
     "s_receiveFromServer",
     "s_newClient",
@@ -61,31 +64,35 @@ Q_CONSTINIT static const uint qt_meta_data_ZN9SymulacjaE[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       4,       // signalCount
+       6,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    2,   68,    2, 0x06,    1 /* Public */,
-       5,    0,   73,    2, 0x06,    4 /* Public */,
-       6,    1,   74,    2, 0x06,    5 /* Public */,
-       7,    0,   77,    2, 0x06,    7 /* Public */,
+       1,    2,   80,    2, 0x06,    1 /* Public */,
+       5,    0,   85,    2, 0x06,    4 /* Public */,
+       6,    1,   86,    2, 0x06,    5 /* Public */,
+       7,    0,   89,    2, 0x06,    7 /* Public */,
+       8,    0,   90,    2, 0x06,    8 /* Public */,
+       9,    1,   91,    2, 0x06,    9 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       8,    0,   78,    2, 0x08,    8 /* Private */,
-       9,    0,   79,    2, 0x08,    9 /* Private */,
-      10,    0,   80,    2, 0x08,   10 /* Private */,
-      11,    0,   81,    2, 0x08,   11 /* Private */,
-      12,    0,   82,    2, 0x08,   12 /* Private */,
+      11,    0,   94,    2, 0x08,   11 /* Private */,
+      12,    0,   95,    2, 0x08,   12 /* Private */,
+      13,    0,   96,    2, 0x08,   13 /* Private */,
+      14,    0,   97,    2, 0x08,   14 /* Private */,
+      15,    0,   98,    2, 0x08,   15 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString, QMetaType::Int,    3,    4,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,    3,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   10,
 
  // slots: parameters
     QMetaType::Void,
@@ -117,6 +124,11 @@ Q_CONSTINIT const QMetaObject Symulacja::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<QString, std::false_type>,
         // method 'clientDisconnected'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'sent'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'updateSettings'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         // method 's_connected'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 's_receiveFromServer'
@@ -140,11 +152,13 @@ void Symulacja::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 1: _t->disconnected(); break;
         case 2: _t->clientConnected((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 3: _t->clientDisconnected(); break;
-        case 4: _t->s_connected(); break;
-        case 5: _t->s_receiveFromServer(); break;
-        case 6: _t->s_newClient(); break;
-        case 7: _t->s_clientDisc(); break;
-        case 8: _t->s_receiveFromClient(); break;
+        case 4: _t->sent(); break;
+        case 5: _t->updateSettings((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 6: _t->s_connected(); break;
+        case 7: _t->s_receiveFromServer(); break;
+        case 8: _t->s_newClient(); break;
+        case 9: _t->s_clientDisc(); break;
+        case 10: _t->s_receiveFromClient(); break;
         default: ;
         }
     }
@@ -178,6 +192,20 @@ void Symulacja::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
                 return;
             }
         }
+        {
+            using _q_method_type = void (Symulacja::*)();
+            if (_q_method_type _q_method = &Symulacja::sent; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
+                *result = 4;
+                return;
+            }
+        }
+        {
+            using _q_method_type = void (Symulacja::*)(bool );
+            if (_q_method_type _q_method = &Symulacja::updateSettings; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
+                *result = 5;
+                return;
+            }
+        }
     }
 }
 
@@ -200,14 +228,14 @@ int Symulacja::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 11;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 11)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 9;
+        _id -= 11;
     }
     return _id;
 }
@@ -236,5 +264,18 @@ void Symulacja::clientConnected(QString _t1)
 void Symulacja::clientDisconnected()
 {
     QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
+}
+
+// SIGNAL 4
+void Symulacja::sent()
+{
+    QMetaObject::activate(this, &staticMetaObject, 4, nullptr);
+}
+
+// SIGNAL 5
+void Symulacja::updateSettings(bool _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 5, _a);
 }
 QT_WARNING_POP

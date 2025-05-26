@@ -34,7 +34,7 @@ KlatkaSymulacji::KlatkaSymulacji()
  * Nie ma większej filozofii.
  * Pobierają i ustawiają.
  */
-double KlatkaSymulacji::get_w()
+double KlatkaSymulacji::get_w() const
 {
     return m_w;
 }
@@ -42,7 +42,7 @@ void KlatkaSymulacji::set_w(double wartosc)
 {
     m_w = wartosc;
 }
-double KlatkaSymulacji::get_z()
+double KlatkaSymulacji::get_z() const
 {
     return m_z;
 }
@@ -50,7 +50,7 @@ void KlatkaSymulacji::set_z(double wartosc)
 {
     m_z = wartosc;
 }
-double KlatkaSymulacji::get_e()
+double KlatkaSymulacji::get_e() const
 {
     return m_e;
 }
@@ -58,7 +58,7 @@ void KlatkaSymulacji::set_e(double wartosc)
 {
     m_e = wartosc;
 }
-double KlatkaSymulacji::get_u()
+double KlatkaSymulacji::get_u() const
 {
     return m_u;
 }
@@ -66,7 +66,7 @@ void KlatkaSymulacji::set_u(double wartosc)
 {
     m_u = wartosc;
 }
-double KlatkaSymulacji::get_y()
+double KlatkaSymulacji::get_y() const
 {
     return m_y;
 }
@@ -74,7 +74,7 @@ void KlatkaSymulacji::set_y(double wartosc)
 {
     m_y = wartosc;
 }
-double KlatkaSymulacji::get_p()
+double KlatkaSymulacji::get_p() const
 {
     return m_p;
 }
@@ -82,7 +82,7 @@ void KlatkaSymulacji::set_p(double wartosc)
 {
     m_p = wartosc;
 }
-double KlatkaSymulacji::get_i()
+double KlatkaSymulacji::get_i() const
 {
     return m_i;
 }
@@ -90,7 +90,7 @@ void KlatkaSymulacji::set_i(double wartosc)
 {
     m_i = wartosc;
 }
-double KlatkaSymulacji::get_d()
+double KlatkaSymulacji::get_d() const
 {
     return m_d;
 }

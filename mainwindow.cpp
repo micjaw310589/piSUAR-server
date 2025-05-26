@@ -94,7 +94,8 @@ MainWindow::MainWindow(QWidget *parent)
 // Tutaj przetwarzana jest każda nowa klatka symulacji
 void MainWindow::timer_timeout_slot()
 {
-    zaktualizuj_wartosci(false);  // Tutaj ustawiam aktualizowanie się wartości z lewego panelu, z wyłączeniem ARX
+    // zaktualizuj_wartosci(false);  // Tutaj ustawiam aktualizowanie się wartości z lewego panelu, z wyłączeniem ARX
+    zaktualizuj_wartosci();
     ODSWIEZANIE = ui->interwal->value();  // Zczytuję z dolnego panelu jak często ma się symulacja wywoływać
     timer->start(ODSWIEZANIE);  // Ustawiamy jak często mają się klatki odświeżać
     symulacja->nastepna_klatka();  // Wywołanie następnej klatki symulacji
@@ -173,7 +174,7 @@ void MainWindow::timer_timeout_slot()
     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
 }
 
-void MainWindow::zaktualizuj_wartosci(bool aktualizuj_arx = true)
+void MainWindow::zaktualizuj_wartosci(bool aktualizuj_arx)
 {
     // Update opóźnienia
     symulacja->set_opoznienie(ui->opoznienie->value());
@@ -202,6 +203,7 @@ void MainWindow::zaktualizuj_wartosci(bool aktualizuj_arx = true)
     {
         ui->sposob_wyliczania_calki->setText("Sumowanie w całce");
     }
+
     // Update ARX
     if (aktualizuj_arx)
     {
@@ -526,7 +528,7 @@ void MainWindow::s_connected(QString adr, int port) {
     ui->btnPolacz->setEnabled(false);
 
     ui->grpARX->setVisible(false);
-    ui->grpZaklARX->setVisible(false);
+    // ui->grpZaklARX->setVisible(false);
     
     ui->lblStatus->setText("Połączono z " + adr + ":" + QString::number(port));
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
@@ -545,7 +547,7 @@ void MainWindow::s_disconnected() {
     ui->btnPolacz->setEnabled(true);
 
     ui->grpARX->setVisible(true);
-    ui->grpZaklARX->setVisible(true);
+    // ui->grpZaklARX->setVisible(true);
 
     ui->lblStatus->setText("Offline");
     ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
@@ -559,8 +561,13 @@ void MainWindow::s_disconnected() {
 void MainWindow::s_clientConnected(QString adr) {
     ui->grpSygnal->setVisible(false);
     ui->grpPID->setVisible(false);
+    ui->grpZaklARX->setVisible(false);
 
+    chart_view->hide();
     chart_arx->removeSeries(wykres_wartosci_zadanej);
+    chart_pid->removeSeries(wykres_p);
+    chart_pid->removeSeries(wykres_i);
+    chart_pid->removeSeries(wykres_d);
 
     ui->lblStatus->setText("Klient " + adr + " połączony");
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
@@ -569,8 +576,13 @@ void MainWindow::s_clientConnected(QString adr) {
 void MainWindow::s_clientDisconnected() {
     ui->grpSygnal->setVisible(true);
     ui->grpPID->setVisible(true);
+    ui->grpZaklARX->setVisible(true);
 
+    chart_view->show();
     chart_arx->addSeries(wykres_wartosci_zadanej);
+    chart_pid->addSeries(wykres_p);
+    chart_pid->addSeries(wykres_i);
+    chart_pid->addSeries(wykres_d);
 
     if (!symulacja->isListening()){
         ui->lblStatus->setText("Offline");
@@ -582,19 +594,23 @@ void MainWindow::s_clientDisconnected() {
     }
 }
 
-void MainWindow::s_drawSeries() {
-    qDebug() << "drawChartSeries";
+void MainWindow::s_drawSeriesOnServer() {
+    // qDebug() << "drawChartSeries";
     wykres_arx->clear();
+    wykres_pid->clear();
 
     int offset = 0;
     double wartosc_min_arx = 0.0;
     double wartosc_max_arx = 0.0;
+    double wartosc_max_pid = 0.0;
+    double wartosc_min_pid = 0.0;
 
     if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
         offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
     }
 
     chart_arx->axes(Qt::Horizontal).first()->setRange(offset, symulacja->get_klatki_symulacji()->size());
+    chart_pid->axes(Qt::Horizontal).first()->setRange(offset, symulacja->get_klatki_symulacji()->size());
 
     auto iterator_klatka_symulacji = symulacja->get_klatki_symulacji()->begin();
     std::advance(iterator_klatka_symulacji, offset);
@@ -603,10 +619,14 @@ void MainWindow::s_drawSeries() {
         wykres_arx->append(i, iterator_klatka_symulacji->get_y());
         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_y());
         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_y());
+        wykres_pid->append(i, iterator_klatka_symulacji->get_u());
+        wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
+        wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
         std::advance(iterator_klatka_symulacji, 1);
     }
 
     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
+    chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
 }
 
 
@@ -653,7 +673,7 @@ void MainWindow::resetujKlienta() {
     connect(symulacja, SIGNAL(connected(QString,int)),
             this, SLOT(s_connected(QString,int)));
     connect(symulacja, SIGNAL(disconnected()),
-            this, SLOT(s_disconnected()));
+            this, SLOT(s_disconnected()));    
 }
 
 void MainWindow::resetujSerwer() {
@@ -668,6 +688,7 @@ void MainWindow::resetujSerwer() {
             this, SLOT(s_clientConnected(QString)));
     connect(symulacja, SIGNAL(clientDisconnected()),
             this, SLOT(s_clientDisconnected()));
+
 }
 
 bool MainWindow::isConnected() {

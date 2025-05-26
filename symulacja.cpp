@@ -26,12 +26,14 @@ Symulacja::Symulacja(QObject *parent)
                              this, SIGNAL(disconnected()));
     QAbstractSocket::connect(&m_socket, SIGNAL(readyRead()),
                              this, SLOT(s_receiveFromServer()));
-    // QAbstractSocket::connect(&m_socket, SIGNAL(readyRead()),
-    //                          parent, SLOT(s_drawSeries()));
 
     // connecty do serwera
     QAbstractSocket::connect(&m_server, SIGNAL(newConnection()),
                              this, SLOT(s_newClient()));
+    QAbstractSocket::connect(this, SIGNAL(sent()),
+                             parent, SLOT(s_drawSeriesOnServer()));
+    QAbstractSocket::connect(this, SIGNAL(updateSettings(bool)),
+                             parent, SLOT(zaktualizuj_wartosci(bool)));
 
 }
 
@@ -52,17 +54,6 @@ void Symulacja::nastepna_klatka()
         m_nowe_u = m_pid(m_nowe_e);
 
         if (isConnected()){
-            // qDebug() << "send to server";
-
-            // KlatkaSymulacji nowa_klatka = KlatkaSymulacji(m_nowe_w,
-            //                                               m_nowe_e,
-            //                                               m_nowe_u,
-            //                                               0.0,
-            //                                               m_nowe_z,
-            //                                               m_pid.get_poprz_p(),
-            //                                               m_pid.get_poprz_i(),
-            //                                               m_pid.get_poprz_d());
-            // m_klatki_symulacji.push_back(nowa_klatka);
             if (!m_klatki_symulacji.empty())
                 sendToServer(m_klatki_symulacji.back());
             else {
@@ -162,12 +153,24 @@ void Symulacja::s_receiveFromClient() {
     KlatkaSymulacji deserialized_data;
     std::memcpy(&deserialized_data, received_data, sizeof(KlatkaSymulacji));
 
+    emit updateSettings(true);
+    qDebug() << deserialized_data.get_z();
     double new_y = m_arx(deserialized_data.get_u(), deserialized_data.get_z());
-    // qDebug() << new_y;
+    emit sent();
+
+    KlatkaSymulacji nowa_klatka = KlatkaSymulacji(deserialized_data.get_w(),
+                                                  deserialized_data.get_e(),
+                                                  deserialized_data.get_u(),
+                                                  new_y + deserialized_data.get_z(),
+                                                  deserialized_data.get_z(),
+                                                  deserialized_data.get_p(),
+                                                  deserialized_data.get_i(),
+                                                  deserialized_data.get_d()
+                                                  );
+
+    m_klatki_symulacji.push_back(nowa_klatka);
 
     QByteArray new_data_serialized;
-    // new_data_serialized.setRawData(QByteArray::number(new_y), sizeof(new_y));
-    // new_data_serialized = QByteArray::fromRawData(QByteArray::number(new_y), sizeof(new_y));
     new_data_serialized = QByteArray::number(new_y);
 
     m_con_klient->write(new_data_serialized);

@@ -52,6 +52,8 @@ signals:
     // serwer
     void clientConnected(QString adr);
     void clientDisconnected();
+    void sent();
+    void updateSettings(bool aktualizuj_arx);
 
 private slots:
     // klient
@@ -78,13 +80,13 @@ public:
     void set_zaklocenia(double srednia, double odchylenie);
 
     // klient
-    const QTcpSocket* getKlient() { return &m_socket; }
+    // const QTcpSocket* getKlient() { return &m_socket; }
     void connect(QString, int);
     void disconnect();
     bool isConnected();
 
     // serwer
-    // const QTcpSocket* getConKlient() { return m_con_klient; }
+    const QTcpSocket* getConKlient() { return m_con_klient; }
     void startListening(int port);
     void stopListening();
     bool isListening();

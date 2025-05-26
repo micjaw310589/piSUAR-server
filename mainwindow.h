@@ -32,6 +32,8 @@ public slots:
 private slots:
     void timer_timeout_slot();
 
+    void zaktualizuj_wartosci(bool aktualizuj_arx = true);
+
     void on_startButton_clicked();
     void on_stopButton_clicked();
     void on_resetButton_clicked();
@@ -51,7 +53,7 @@ private slots:
     // serwer
     void s_clientConnected(QString);
     void s_clientDisconnected();
-    void s_drawSeries();
+    void s_drawSeriesOnServer();
 
 private:
     Ui::MainWindow *ui;
@@ -75,7 +77,6 @@ private:
     Symulacja *symulacja = nullptr;
     DialogARX *dialog_arx = nullptr;
 
-    void zaktualizuj_wartosci(bool aktualizuj_arx);
 
     QString sklejAdresIP();
     bool sprawdzPoprawnosc(QString IP, int port);

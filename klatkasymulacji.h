@@ -19,21 +19,21 @@ public:
     KlatkaSymulacji(double, double, double, double, double, double, double, double);
     KlatkaSymulacji();
 
-    double get_w();
+    double get_w() const;
     void set_w(double);
-    double get_z();
+    double get_z() const;
     void set_z(double);
-    double get_e();
+    double get_e() const;
     void set_e(double);
-    double get_u();
+    double get_u() const;
     void set_u(double);
-    double get_y();
+    double get_y() const;
     void set_y(double);
-    double get_p();
+    double get_p() const;
     void set_p(double);
-    double get_i();
+    double get_i() const;
     void set_i(double);
-    double get_d();
+    double get_d() const;
     void set_d(double);
 };
 
