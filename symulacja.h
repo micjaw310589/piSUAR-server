@@ -1,6 +1,7 @@
 #ifndef SYMULACJA_H
 #define SYMULACJA_H
 
+#include <QTimer>
 #include <QObject>
 #include <QTcpSocket>
 #include <QTcpServer>

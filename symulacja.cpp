@@ -2,6 +2,7 @@
 #include "wartosczadana.h"
 #include <iostream>
 #include <iomanip>
+#include <functional>
 
 Symulacja::Symulacja(QObject *parent)
     : QObject{parent}
@@ -34,7 +35,6 @@ Symulacja::Symulacja(QObject *parent)
                              parent, SLOT(s_drawSeriesOnServer()));
     QAbstractSocket::connect(this, SIGNAL(updateSettings(bool)),
                              parent, SLOT(zaktualizuj_wartosci(bool)));
-
 }
 
 /* Jedna z najważniejszych funkcji w tym programi.
@@ -120,6 +120,7 @@ void Symulacja::s_receiveFromServer() {
                                                   m_pid.get_poprz_d());
     m_poprz_y = new_y;
     m_i++;
+
     m_klatki_symulacji.push_back(nowa_klatka);
 
 }
@@ -174,9 +175,9 @@ void Symulacja::s_receiveFromClient() {
     QByteArray new_data_serialized;
     new_data_serialized = QByteArray::number(new_y);
 
+    // QTimer::singleShot(1000, m_con_klient, SLOT(write(new_data_serialized)));
     m_con_klient->write(new_data_serialized);
 }
-
 
 
 /* Settery i gettery.

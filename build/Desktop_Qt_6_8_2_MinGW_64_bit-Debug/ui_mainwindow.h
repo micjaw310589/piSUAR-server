@@ -139,6 +139,8 @@ public:
     QSpinBox *spinBox_Port;
     QSpacerItem *horizontalSpacer_11;
     QCheckBox *ckbServer;
+    QSpacerItem *horizontalSpacer_14;
+    QLabel *lblLightIndicator;
     QPushButton *btnPolacz;
     QPushButton *btnRozlacz;
     QSpacerItem *horizontalSpacer_12;
@@ -685,6 +687,23 @@ public:
 
         horizontalLayout_6->addWidget(ckbServer);
 
+        horizontalSpacer_14 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_14);
+
+        lblLightIndicator = new QLabel(centralwidget);
+        lblLightIndicator->setObjectName("lblLightIndicator");
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(lblLightIndicator->sizePolicy().hasHeightForWidth());
+        lblLightIndicator->setSizePolicy(sizePolicy);
+        lblLightIndicator->setMinimumSize(QSize(20, 20));
+        lblLightIndicator->setBaseSize(QSize(0, 0));
+        lblLightIndicator->setStyleSheet(QString::fromUtf8("background-color: rgba(0, 0, 0, 0);"));
+
+        horizontalLayout_6->addWidget(lblLightIndicator);
+
         btnPolacz = new QPushButton(centralwidget);
         btnPolacz->setObjectName("btnPolacz");
 
@@ -766,6 +785,7 @@ public:
         label_22->setText(QCoreApplication::translate("MainWindow", ".", nullptr));
         label_23->setText(QCoreApplication::translate("MainWindow", "Port:", nullptr));
         ckbServer->setText(QCoreApplication::translate("MainWindow", "Serwer", nullptr));
+        lblLightIndicator->setText(QString());
         btnPolacz->setText(QCoreApplication::translate("MainWindow", "Po\305\202\304\205cz", nullptr));
         btnRozlacz->setText(QCoreApplication::translate("MainWindow", "Roz\305\202\304\205cz", nullptr));
     } // retranslateUi

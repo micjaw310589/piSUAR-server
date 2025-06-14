@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->btnRozlacz->setEnabled(false);
+    ui->lblLightIndicator->setVisible(false);
     ui->lblStatus->setText("Offline");
     ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
 
@@ -96,10 +97,14 @@ MainWindow::MainWindow(QWidget *parent)
 // Tutaj przetwarzana jest każda nowa klatka symulacji
 void MainWindow::timer_timeout_slot()
 {
+
     if(symulacja->get_klatki_symulacji()->size() == m_last_klatki_symulacji_size) {
-        qDebug() << "ZA SZYBKO";
+        // nie wyrabia
+        ui->lblLightIndicator->setStyleSheet("background-color: red");
     }
     else {
+        // wyrabia
+        ui->lblLightIndicator->setStyleSheet("background-color: green");
         m_last_klatki_symulacji_size = symulacja->get_klatki_symulacji()->size();
     }
 
@@ -555,6 +560,7 @@ void MainWindow::s_connected(QString adr, int port) {
     ui->ckbServer->setEnabled(false);
     ui->btnRozlacz->setEnabled(true);
     ui->btnPolacz->setEnabled(false);
+    ui->lblLightIndicator->setVisible(true);
 
     ui->grpARX->setVisible(false);
     // ui->grpZaklARX->setVisible(false);
@@ -574,6 +580,7 @@ void MainWindow::s_disconnected() {
     ui->ckbServer->setEnabled(true);
     ui->btnRozlacz->setEnabled(false);
     ui->btnPolacz->setEnabled(true);
+    ui->lblLightIndicator->setVisible(false);
 
     ui->grpARX->setVisible(true);
     // ui->grpZaklARX->setVisible(true);
@@ -602,7 +609,6 @@ void MainWindow::s_clientConnected(QString adr) {
     ui->loadButton->setEnabled(false);
 
     chart_view->hide();
-    chart_arx->removeSeries(wykres_wartosci_zadanej);
     chart_pid->removeSeries(wykres_p);
     chart_pid->removeSeries(wykres_i);
     chart_pid->removeSeries(wykres_d);
@@ -627,7 +633,6 @@ void MainWindow::s_clientDisconnected() {
     ui->loadButton->setEnabled(true);
 
     chart_view->show();
-    chart_arx->addSeries(wykres_wartosci_zadanej);
     chart_pid->addSeries(wykres_p);
     chart_pid->addSeries(wykres_i);
     chart_pid->addSeries(wykres_d);
@@ -646,6 +651,7 @@ void MainWindow::s_drawSeriesOnServer() {
     // qDebug() << "drawChartSeries";
     wykres_arx->clear();
     wykres_pid->clear();
+    wykres_wartosci_zadanej->clear();
 
     int offset = 0;
     double wartosc_min_arx = 0.0;
@@ -670,6 +676,9 @@ void MainWindow::s_drawSeriesOnServer() {
         wykres_pid->append(i, iterator_klatka_symulacji->get_u());
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
+        wykres_wartosci_zadanej->append(i, iterator_klatka_symulacji->get_w());
+        wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_w());
+        wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_w());
         std::advance(iterator_klatka_symulacji, 1);
     }
 
