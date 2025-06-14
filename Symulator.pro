@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     arx.cpp \
+    dialog.cpp \
     dialogarx.cpp \
     generator.cpp \
     klatkasymulacji.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 
 HEADERS += \
     arx.h \
+    dialog.h \
     dialogarx.h \
     generator.h \
     klatkasymulacji.h \
@@ -32,6 +34,7 @@ HEADERS += \
     zaklocenia.h
 
 FORMS += \
+    dialog.ui \
     dialogarx.ui \
     mainwindow.ui
 

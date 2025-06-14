@@ -64,6 +64,8 @@ constexpr auto qt_meta_stringdata_CLASSMainWindowENDCLASS = QtMocHelpers::string
     "accepted_dialog_arx",
     "",
     "timer_timeout_slot",
+    "zaktualizuj_wartosci",
+    "aktualizuj_arx",
     "on_startButton_clicked",
     "on_stopButton_clicked",
     "on_resetButton_clicked",
@@ -71,7 +73,17 @@ constexpr auto qt_meta_stringdata_CLASSMainWindowENDCLASS = QtMocHelpers::string
     "on_loadButton_clicked",
     "on_updateButton_clicked",
     "on_zeruj_czesc_calkujaca_clicked",
-    "on_zmien_ustawienia_arx_clicked"
+    "on_zmien_ustawienia_arx_clicked",
+    "on_btnPolacz_clicked",
+    "on_btnRozlacz_clicked",
+    "on_ckbServer_checkStateChanged",
+    "Qt::CheckState",
+    "arg1",
+    "s_connected",
+    "s_disconnected",
+    "s_clientConnected",
+    "s_clientDisconnected",
+    "s_drawSeriesOnServer"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -84,7 +96,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      20,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -92,26 +104,46 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   74,    2, 0x0a,    1 /* Public */,
-       3,    0,   75,    2, 0x08,    2 /* Private */,
-       4,    0,   76,    2, 0x08,    3 /* Private */,
-       5,    0,   77,    2, 0x08,    4 /* Private */,
-       6,    0,   78,    2, 0x08,    5 /* Private */,
-       7,    0,   79,    2, 0x08,    6 /* Private */,
-       8,    0,   80,    2, 0x08,    7 /* Private */,
-       9,    0,   81,    2, 0x08,    8 /* Private */,
-      10,    0,   82,    2, 0x08,    9 /* Private */,
-      11,    0,   83,    2, 0x08,   10 /* Private */,
+       1,    0,  134,    2, 0x0a,    1 /* Public */,
+       3,    0,  135,    2, 0x08,    2 /* Private */,
+       4,    1,  136,    2, 0x08,    3 /* Private */,
+       4,    0,  139,    2, 0x28,    5 /* Private | MethodCloned */,
+       6,    0,  140,    2, 0x08,    6 /* Private */,
+       7,    0,  141,    2, 0x08,    7 /* Private */,
+       8,    0,  142,    2, 0x08,    8 /* Private */,
+       9,    0,  143,    2, 0x08,    9 /* Private */,
+      10,    0,  144,    2, 0x08,   10 /* Private */,
+      11,    0,  145,    2, 0x08,   11 /* Private */,
+      12,    0,  146,    2, 0x08,   12 /* Private */,
+      13,    0,  147,    2, 0x08,   13 /* Private */,
+      14,    0,  148,    2, 0x08,   14 /* Private */,
+      15,    0,  149,    2, 0x08,   15 /* Private */,
+      16,    1,  150,    2, 0x08,   16 /* Private */,
+      19,    2,  153,    2, 0x08,   18 /* Private */,
+      20,    0,  158,    2, 0x08,   21 /* Private */,
+      21,    1,  159,    2, 0x08,   22 /* Private */,
+      22,    0,  162,    2, 0x08,   24 /* Private */,
+      23,    0,  163,    2, 0x08,   25 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,    5,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 17,   18,
+    QMetaType::Void, QMetaType::QString, QMetaType::Int,    2,    2,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,    2,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -131,6 +163,11 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'timer_timeout_slot'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'zaktualizuj_wartosci'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'zaktualizuj_wartosci'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_startButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_stopButton_clicked'
@@ -146,6 +183,26 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         // method 'on_zeruj_czesc_calkujaca_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_zmien_ustawienia_arx_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_btnPolacz_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_btnRozlacz_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_ckbServer_checkStateChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const Qt::CheckState &, std::false_type>,
+        // method 's_connected'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QString, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 's_disconnected'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 's_clientConnected'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QString, std::false_type>,
+        // method 's_clientDisconnected'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 's_drawSeriesOnServer'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -159,18 +216,27 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         switch (_id) {
         case 0: _t->accepted_dialog_arx(); break;
         case 1: _t->timer_timeout_slot(); break;
-        case 2: _t->on_startButton_clicked(); break;
-        case 3: _t->on_stopButton_clicked(); break;
-        case 4: _t->on_resetButton_clicked(); break;
-        case 5: _t->on_saveButton_clicked(); break;
-        case 6: _t->on_loadButton_clicked(); break;
-        case 7: _t->on_updateButton_clicked(); break;
-        case 8: _t->on_zeruj_czesc_calkujaca_clicked(); break;
-        case 9: _t->on_zmien_ustawienia_arx_clicked(); break;
+        case 2: _t->zaktualizuj_wartosci((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 3: _t->zaktualizuj_wartosci(); break;
+        case 4: _t->on_startButton_clicked(); break;
+        case 5: _t->on_stopButton_clicked(); break;
+        case 6: _t->on_resetButton_clicked(); break;
+        case 7: _t->on_saveButton_clicked(); break;
+        case 8: _t->on_loadButton_clicked(); break;
+        case 9: _t->on_updateButton_clicked(); break;
+        case 10: _t->on_zeruj_czesc_calkujaca_clicked(); break;
+        case 11: _t->on_zmien_ustawienia_arx_clicked(); break;
+        case 12: _t->on_btnPolacz_clicked(); break;
+        case 13: _t->on_btnRozlacz_clicked(); break;
+        case 14: _t->on_ckbServer_checkStateChanged((*reinterpret_cast< std::add_pointer_t<Qt::CheckState>>(_a[1]))); break;
+        case 15: _t->s_connected((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 16: _t->s_disconnected(); break;
+        case 17: _t->s_clientConnected((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 18: _t->s_clientDisconnected(); break;
+        case 19: _t->s_drawSeriesOnServer(); break;
         default: ;
         }
     }
-    (void)_a;
 }
 
 const QMetaObject *MainWindow::metaObject() const
@@ -192,13 +258,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 20)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 20;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 10)
+        if (_id < 20)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 10;
+        _id -= 20;
     }
     return _id;
 }

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "dialogarx.h"
 #include "qhostaddress.h"
+#include "dialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -437,6 +438,11 @@ void MainWindow::accepted_dialog_arx()
 void MainWindow::on_btnPolacz_clicked()
 {
     if (ui->ckbServer->checkState() == Qt::Checked) {
+        Dialog* dial = new Dialog("Czy chcesz włączyć serwer?", this);
+        int result = dial->exec();
+        if(result==QDialog::Rejected)
+            return;
+
         int port = ui->spinBox_Port->value();
         if (!sprawdzPoprawnosc(port))
             return;
@@ -458,6 +464,11 @@ void MainWindow::on_btnPolacz_clicked()
         }
     }
     else {
+        Dialog* dial = new Dialog("Czy chcesz się połączyć?", this);
+        int result = dial->exec();
+        if(result==QDialog::Rejected)
+            return;
+
         QString adres = sklejAdresIP();
         int port = ui->spinBox_Port->value();
 
@@ -473,6 +484,11 @@ void MainWindow::on_btnPolacz_clicked()
 void MainWindow::on_btnRozlacz_clicked()
 {
     if (ui->ckbServer->checkState() == Qt::Checked) {
+        Dialog* dial = new Dialog("Czy chcesz wyłączyć nasłuchiwanie portu?",this);
+        int result = dial->exec();
+        if(result==QDialog::Rejected)
+            return;
+
         if (symulacja->isListening()) {
             symulacja->stopListening();
             ui->btnRozlacz->setEnabled(false);
@@ -484,6 +500,11 @@ void MainWindow::on_btnRozlacz_clicked()
         }
     }
     else {
+        Dialog* dial = new Dialog("Czy chcesz się rozłączyć?",this);
+        int result = dial->exec();
+        if(result==QDialog::Rejected)
+            return;
+
         symulacja->disconnect();
 
         ui->ckbServer->setEnabled(true);
@@ -571,6 +592,15 @@ void MainWindow::s_clientConnected(QString adr) {
     ui->grpPID->setVisible(false);
     ui->grpZaklARX->setVisible(false);
 
+    ui->label_14->setEnabled(false);
+    ui->interwal->setEnabled(false);
+    ui->updateButton->setEnabled(false);
+    ui->startButton->setEnabled(false);
+    ui->stopButton->setEnabled(false);
+    ui->resetButton->setEnabled(false);
+    ui->saveButton->setEnabled(false);
+    ui->loadButton->setEnabled(false);
+
     chart_view->hide();
     chart_arx->removeSeries(wykres_wartosci_zadanej);
     chart_pid->removeSeries(wykres_p);
@@ -585,6 +615,16 @@ void MainWindow::s_clientDisconnected() {
     ui->grpSygnal->setVisible(true);
     ui->grpPID->setVisible(true);
     ui->grpZaklARX->setVisible(true);
+
+
+    ui->label_14->setEnabled(true);
+    ui->interwal->setEnabled(true);
+    ui->updateButton->setEnabled(true);
+    ui->startButton->setEnabled(true);
+    ui->stopButton->setEnabled(true);
+    ui->resetButton->setEnabled(true);
+    ui->saveButton->setEnabled(true);
+    ui->loadButton->setEnabled(true);
 
     chart_view->show();
     chart_arx->addSeries(wykres_wartosci_zadanej);

@@ -18,6 +18,7 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -41,7 +42,7 @@ public:
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QVBoxLayout *verticalLayout_8;
-    QFrame *verticalFrame1;
+    QFrame *grpSygnal;
     QVBoxLayout *verticalLayout_7;
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer_5;
@@ -59,7 +60,7 @@ public:
     QRadioButton *sygnalSinusoida;
     QRadioButton *sygnalProstakat;
     QLabel *label_7;
-    QFrame *verticalFrame;
+    QFrame *grpZaklARX;
     QVBoxLayout *verticalLayout_10;
     QHBoxLayout *horizontalLayout_7;
     QSpacerItem *horizontalSpacer_19;
@@ -70,7 +71,7 @@ public:
     QLabel *label_18;
     QDoubleSpinBox *zaklocenie_sred;
     QDoubleSpinBox *zaklocenie_odchylenie;
-    QFrame *verticalFrame3;
+    QFrame *grpPID;
     QVBoxLayout *verticalLayout_6;
     QHBoxLayout *horizontalLayout_4;
     QSpacerItem *horizontalSpacer_7;
@@ -86,7 +87,7 @@ public:
     QPushButton *zeruj_czesc_calkujaca;
     QCheckBox *sposob_wyliczania_calki;
     QLabel *label_17;
-    QFrame *verticalFrame2;
+    QFrame *grpARX;
     QVBoxLayout *verticalLayout_9;
     QHBoxLayout *horizontalLayout_5;
     QSpacerItem *horizontalSpacer_9;
@@ -121,6 +122,26 @@ public:
     QPushButton *saveButton;
     QPushButton *loadButton;
     QSpacerItem *horizontalSpacer_2;
+    QHBoxLayout *horizontalLayout_6;
+    QSpacerItem *horizontalSpacer_13;
+    QLabel *lblStatus;
+    QSpacerItem *horizontalSpacer_3;
+    QLabel *label_19;
+    QLineEdit *txtIP_A;
+    QLabel *label_20;
+    QLineEdit *txtIP_B;
+    QLabel *label_21;
+    QLineEdit *txtIP_C;
+    QLabel *label_22;
+    QLineEdit *txtIP_D;
+    QSpacerItem *horizontalSpacer_4;
+    QLabel *label_23;
+    QSpinBox *spinBox_Port;
+    QSpacerItem *horizontalSpacer_11;
+    QCheckBox *ckbServer;
+    QPushButton *btnPolacz;
+    QPushButton *btnRozlacz;
+    QSpacerItem *horizontalSpacer_12;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -143,13 +164,13 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 240, 651));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 209, 855));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName("verticalLayout_8");
-        verticalFrame1 = new QFrame(scrollAreaWidgetContents);
-        verticalFrame1->setObjectName("verticalFrame1");
-        verticalFrame1->setFrameShape(QFrame::Shape::StyledPanel);
-        verticalLayout_7 = new QVBoxLayout(verticalFrame1);
+        grpSygnal = new QFrame(scrollAreaWidgetContents);
+        grpSygnal->setObjectName("grpSygnal");
+        grpSygnal->setFrameShape(QFrame::Shape::StyledPanel);
+        verticalLayout_7 = new QVBoxLayout(grpSygnal);
         verticalLayout_7->setObjectName("verticalLayout_7");
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName("horizontalLayout_2");
@@ -157,7 +178,7 @@ public:
 
         horizontalLayout_2->addItem(horizontalSpacer_5);
 
-        label_8 = new QLabel(verticalFrame1);
+        label_8 = new QLabel(grpSygnal);
         label_8->setObjectName("label_8");
 
         horizontalLayout_2->addWidget(label_8);
@@ -171,7 +192,7 @@ public:
 
         formLayout_3 = new QFormLayout();
         formLayout_3->setObjectName("formLayout_3");
-        wartoscZadanaA = new QDoubleSpinBox(verticalFrame1);
+        wartoscZadanaA = new QDoubleSpinBox(grpSygnal);
         wartoscZadanaA->setObjectName("wartoscZadanaA");
         wartoscZadanaA->setMinimum(-100.000000000000000);
         wartoscZadanaA->setMaximum(1000.000000000000000);
@@ -179,7 +200,7 @@ public:
 
         formLayout_3->setWidget(0, QFormLayout::FieldRole, wartoscZadanaA);
 
-        wartoscZadanaT = new QSpinBox(verticalFrame1);
+        wartoscZadanaT = new QSpinBox(grpSygnal);
         wartoscZadanaT->setObjectName("wartoscZadanaT");
         wartoscZadanaT->setMinimum(1);
         wartoscZadanaT->setMaximum(1000);
@@ -187,19 +208,19 @@ public:
 
         formLayout_3->setWidget(1, QFormLayout::FieldRole, wartoscZadanaT);
 
-        label_2 = new QLabel(verticalFrame1);
+        label_2 = new QLabel(grpSygnal);
         label_2->setObjectName("label_2");
         label_2->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
 
         formLayout_3->setWidget(0, QFormLayout::LabelRole, label_2);
 
-        label_4 = new QLabel(verticalFrame1);
+        label_4 = new QLabel(grpSygnal);
         label_4->setObjectName("label_4");
         label_4->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
 
         formLayout_3->setWidget(1, QFormLayout::LabelRole, label_4);
 
-        wartoscZadanaP = new QDoubleSpinBox(verticalFrame1);
+        wartoscZadanaP = new QDoubleSpinBox(grpSygnal);
         wartoscZadanaP->setObjectName("wartoscZadanaP");
         wartoscZadanaP->setMaximum(1.000000000000000);
         wartoscZadanaP->setSingleStep(0.010000000000000);
@@ -207,7 +228,7 @@ public:
 
         formLayout_3->setWidget(2, QFormLayout::FieldRole, wartoscZadanaP);
 
-        label_5 = new QLabel(verticalFrame1);
+        label_5 = new QLabel(grpSygnal);
         label_5->setObjectName("label_5");
         label_5->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
 
@@ -215,19 +236,19 @@ public:
 
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setObjectName("verticalLayout_2");
-        sygnalSkokowy = new QRadioButton(verticalFrame1);
+        sygnalSkokowy = new QRadioButton(grpSygnal);
         sygnalSkokowy->setObjectName("sygnalSkokowy");
         sygnalSkokowy->setChecked(false);
 
         verticalLayout_2->addWidget(sygnalSkokowy);
 
-        sygnalSinusoida = new QRadioButton(verticalFrame1);
+        sygnalSinusoida = new QRadioButton(grpSygnal);
         sygnalSinusoida->setObjectName("sygnalSinusoida");
         sygnalSinusoida->setChecked(true);
 
         verticalLayout_2->addWidget(sygnalSinusoida);
 
-        sygnalProstakat = new QRadioButton(verticalFrame1);
+        sygnalProstakat = new QRadioButton(grpSygnal);
         sygnalProstakat->setObjectName("sygnalProstakat");
 
         verticalLayout_2->addWidget(sygnalProstakat);
@@ -235,7 +256,7 @@ public:
 
         formLayout_3->setLayout(3, QFormLayout::FieldRole, verticalLayout_2);
 
-        label_7 = new QLabel(verticalFrame1);
+        label_7 = new QLabel(grpSygnal);
         label_7->setObjectName("label_7");
 
         formLayout_3->setWidget(3, QFormLayout::LabelRole, label_7);
@@ -244,12 +265,12 @@ public:
         verticalLayout_7->addLayout(formLayout_3);
 
 
-        verticalLayout_8->addWidget(verticalFrame1);
+        verticalLayout_8->addWidget(grpSygnal);
 
-        verticalFrame = new QFrame(scrollAreaWidgetContents);
-        verticalFrame->setObjectName("verticalFrame");
-        verticalFrame->setFrameShape(QFrame::Shape::StyledPanel);
-        verticalLayout_10 = new QVBoxLayout(verticalFrame);
+        grpZaklARX = new QFrame(scrollAreaWidgetContents);
+        grpZaklARX->setObjectName("grpZaklARX");
+        grpZaklARX->setFrameShape(QFrame::Shape::StyledPanel);
+        verticalLayout_10 = new QVBoxLayout(grpZaklARX);
         verticalLayout_10->setObjectName("verticalLayout_10");
         horizontalLayout_7 = new QHBoxLayout();
         horizontalLayout_7->setObjectName("horizontalLayout_7");
@@ -257,7 +278,7 @@ public:
 
         horizontalLayout_7->addItem(horizontalSpacer_19);
 
-        label_15 = new QLabel(verticalFrame);
+        label_15 = new QLabel(grpZaklARX);
         label_15->setObjectName("label_15");
 
         horizontalLayout_7->addWidget(label_15);
@@ -271,24 +292,24 @@ public:
 
         formLayout_4 = new QFormLayout();
         formLayout_4->setObjectName("formLayout_4");
-        label_16 = new QLabel(verticalFrame);
+        label_16 = new QLabel(grpZaklARX);
         label_16->setObjectName("label_16");
 
         formLayout_4->setWidget(0, QFormLayout::LabelRole, label_16);
 
-        label_18 = new QLabel(verticalFrame);
+        label_18 = new QLabel(grpZaklARX);
         label_18->setObjectName("label_18");
 
         formLayout_4->setWidget(1, QFormLayout::LabelRole, label_18);
 
-        zaklocenie_sred = new QDoubleSpinBox(verticalFrame);
+        zaklocenie_sred = new QDoubleSpinBox(grpZaklARX);
         zaklocenie_sred->setObjectName("zaklocenie_sred");
         zaklocenie_sred->setMinimum(-99.000000000000000);
         zaklocenie_sred->setSingleStep(0.100000000000000);
 
         formLayout_4->setWidget(0, QFormLayout::FieldRole, zaklocenie_sred);
 
-        zaklocenie_odchylenie = new QDoubleSpinBox(verticalFrame);
+        zaklocenie_odchylenie = new QDoubleSpinBox(grpZaklARX);
         zaklocenie_odchylenie->setObjectName("zaklocenie_odchylenie");
         zaklocenie_odchylenie->setMinimum(0.000000000000000);
         zaklocenie_odchylenie->setSingleStep(0.010000000000000);
@@ -300,12 +321,12 @@ public:
         verticalLayout_10->addLayout(formLayout_4);
 
 
-        verticalLayout_8->addWidget(verticalFrame);
+        verticalLayout_8->addWidget(grpZaklARX);
 
-        verticalFrame3 = new QFrame(scrollAreaWidgetContents);
-        verticalFrame3->setObjectName("verticalFrame3");
-        verticalFrame3->setFrameShape(QFrame::Shape::StyledPanel);
-        verticalLayout_6 = new QVBoxLayout(verticalFrame3);
+        grpPID = new QFrame(scrollAreaWidgetContents);
+        grpPID->setObjectName("grpPID");
+        grpPID->setFrameShape(QFrame::Shape::StyledPanel);
+        verticalLayout_6 = new QVBoxLayout(grpPID);
         verticalLayout_6->setObjectName("verticalLayout_6");
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName("horizontalLayout_4");
@@ -313,7 +334,7 @@ public:
 
         horizontalLayout_4->addItem(horizontalSpacer_7);
 
-        label_12 = new QLabel(verticalFrame3);
+        label_12 = new QLabel(grpPID);
         label_12->setObjectName("label_12");
 
         horizontalLayout_4->addWidget(label_12);
@@ -327,55 +348,55 @@ public:
 
         formLayout_2 = new QFormLayout();
         formLayout_2->setObjectName("formLayout_2");
-        label_9 = new QLabel(verticalFrame3);
+        label_9 = new QLabel(grpPID);
         label_9->setObjectName("label_9");
         label_9->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
 
         formLayout_2->setWidget(0, QFormLayout::LabelRole, label_9);
 
-        pidK = new QDoubleSpinBox(verticalFrame3);
+        pidK = new QDoubleSpinBox(grpPID);
         pidK->setObjectName("pidK");
         pidK->setValue(0.300000000000000);
 
         formLayout_2->setWidget(0, QFormLayout::FieldRole, pidK);
 
-        label_11 = new QLabel(verticalFrame3);
+        label_11 = new QLabel(grpPID);
         label_11->setObjectName("label_11");
         label_11->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
 
         formLayout_2->setWidget(1, QFormLayout::LabelRole, label_11);
 
-        pidTd = new QDoubleSpinBox(verticalFrame3);
+        pidTd = new QDoubleSpinBox(grpPID);
         pidTd->setObjectName("pidTd");
         pidTd->setSingleStep(0.010000000000000);
         pidTd->setValue(0.100000000000000);
 
         formLayout_2->setWidget(1, QFormLayout::FieldRole, pidTd);
 
-        pidTi = new QDoubleSpinBox(verticalFrame3);
+        pidTi = new QDoubleSpinBox(grpPID);
         pidTi->setObjectName("pidTi");
         pidTi->setMaximum(300.000000000000000);
         pidTi->setValue(10.000000000000000);
 
         formLayout_2->setWidget(2, QFormLayout::FieldRole, pidTi);
 
-        label_10 = new QLabel(verticalFrame3);
+        label_10 = new QLabel(grpPID);
         label_10->setObjectName("label_10");
         label_10->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
 
         formLayout_2->setWidget(2, QFormLayout::LabelRole, label_10);
 
-        zeruj_czesc_calkujaca = new QPushButton(verticalFrame3);
+        zeruj_czesc_calkujaca = new QPushButton(grpPID);
         zeruj_czesc_calkujaca->setObjectName("zeruj_czesc_calkujaca");
 
         formLayout_2->setWidget(4, QFormLayout::FieldRole, zeruj_czesc_calkujaca);
 
-        sposob_wyliczania_calki = new QCheckBox(verticalFrame3);
+        sposob_wyliczania_calki = new QCheckBox(grpPID);
         sposob_wyliczania_calki->setObjectName("sposob_wyliczania_calki");
 
         formLayout_2->setWidget(3, QFormLayout::FieldRole, sposob_wyliczania_calki);
 
-        label_17 = new QLabel(verticalFrame3);
+        label_17 = new QLabel(grpPID);
         label_17->setObjectName("label_17");
 
         formLayout_2->setWidget(3, QFormLayout::LabelRole, label_17);
@@ -384,12 +405,12 @@ public:
         verticalLayout_6->addLayout(formLayout_2);
 
 
-        verticalLayout_8->addWidget(verticalFrame3);
+        verticalLayout_8->addWidget(grpPID);
 
-        verticalFrame2 = new QFrame(scrollAreaWidgetContents);
-        verticalFrame2->setObjectName("verticalFrame2");
-        verticalFrame2->setFrameShape(QFrame::Shape::StyledPanel);
-        verticalLayout_9 = new QVBoxLayout(verticalFrame2);
+        grpARX = new QFrame(scrollAreaWidgetContents);
+        grpARX->setObjectName("grpARX");
+        grpARX->setFrameShape(QFrame::Shape::StyledPanel);
+        verticalLayout_9 = new QVBoxLayout(grpARX);
         verticalLayout_9->setObjectName("verticalLayout_9");
         horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setObjectName("horizontalLayout_5");
@@ -397,7 +418,7 @@ public:
 
         horizontalLayout_5->addItem(horizontalSpacer_9);
 
-        label_13 = new QLabel(verticalFrame2);
+        label_13 = new QLabel(grpARX);
         label_13->setObjectName("label_13");
 
         horizontalLayout_5->addWidget(label_13);
@@ -409,19 +430,19 @@ public:
 
         verticalLayout_9->addLayout(horizontalLayout_5);
 
-        zmien_ustawienia_arx = new QPushButton(verticalFrame2);
+        zmien_ustawienia_arx = new QPushButton(grpARX);
         zmien_ustawienia_arx->setObjectName("zmien_ustawienia_arx");
 
         verticalLayout_9->addWidget(zmien_ustawienia_arx);
 
         formLayout = new QFormLayout();
         formLayout->setObjectName("formLayout");
-        label = new QLabel(verticalFrame2);
+        label = new QLabel(grpARX);
         label->setObjectName("label");
 
         formLayout->setWidget(0, QFormLayout::LabelRole, label);
 
-        opoznienie = new QSpinBox(verticalFrame2);
+        opoznienie = new QSpinBox(grpARX);
         opoznienie->setObjectName("opoznienie");
         opoznienie->setEnabled(false);
         opoznienie->setMinimum(1);
@@ -429,14 +450,14 @@ public:
 
         formLayout->setWidget(0, QFormLayout::FieldRole, opoznienie);
 
-        label_3 = new QLabel(verticalFrame2);
+        label_3 = new QLabel(grpARX);
         label_3->setObjectName("label_3");
 
         formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
 
         horizontalLayout_18 = new QHBoxLayout();
         horizontalLayout_18->setObjectName("horizontalLayout_18");
-        arx_a = new QDoubleSpinBox(verticalFrame2);
+        arx_a = new QDoubleSpinBox(grpARX);
         arx_a->setObjectName("arx_a");
         arx_a->setEnabled(false);
         arx_a->setMinimum(-99.000000000000000);
@@ -447,7 +468,7 @@ public:
 
         formLayout->setLayout(1, QFormLayout::FieldRole, horizontalLayout_18);
 
-        arx_a_2 = new QDoubleSpinBox(verticalFrame2);
+        arx_a_2 = new QDoubleSpinBox(grpARX);
         arx_a_2->setObjectName("arx_a_2");
         arx_a_2->setEnabled(false);
         arx_a_2->setMinimum(-99.000000000000000);
@@ -455,7 +476,7 @@ public:
 
         formLayout->setWidget(2, QFormLayout::FieldRole, arx_a_2);
 
-        arx_a_3 = new QDoubleSpinBox(verticalFrame2);
+        arx_a_3 = new QDoubleSpinBox(grpARX);
         arx_a_3->setObjectName("arx_a_3");
         arx_a_3->setEnabled(false);
         arx_a_3->setMinimum(-99.000000000000000);
@@ -463,14 +484,14 @@ public:
 
         formLayout->setWidget(3, QFormLayout::FieldRole, arx_a_3);
 
-        label_6 = new QLabel(verticalFrame2);
+        label_6 = new QLabel(grpARX);
         label_6->setObjectName("label_6");
 
         formLayout->setWidget(4, QFormLayout::LabelRole, label_6);
 
         horizontalLayout_19 = new QHBoxLayout();
         horizontalLayout_19->setObjectName("horizontalLayout_19");
-        arx_b = new QDoubleSpinBox(verticalFrame2);
+        arx_b = new QDoubleSpinBox(grpARX);
         arx_b->setObjectName("arx_b");
         arx_b->setEnabled(false);
         arx_b->setMinimum(-99.000000000000000);
@@ -481,7 +502,7 @@ public:
 
         formLayout->setLayout(4, QFormLayout::FieldRole, horizontalLayout_19);
 
-        arx_b_2 = new QDoubleSpinBox(verticalFrame2);
+        arx_b_2 = new QDoubleSpinBox(grpARX);
         arx_b_2->setObjectName("arx_b_2");
         arx_b_2->setEnabled(false);
         arx_b_2->setMinimum(-99.000000000000000);
@@ -489,7 +510,7 @@ public:
 
         formLayout->setWidget(5, QFormLayout::FieldRole, arx_b_2);
 
-        arx_b_3 = new QDoubleSpinBox(verticalFrame2);
+        arx_b_3 = new QDoubleSpinBox(grpARX);
         arx_b_3->setObjectName("arx_b_3");
         arx_b_3->setEnabled(false);
         arx_b_3->setMinimum(-99.000000000000000);
@@ -501,7 +522,7 @@ public:
         verticalLayout_9->addLayout(formLayout);
 
 
-        verticalLayout_8->addWidget(verticalFrame2);
+        verticalLayout_8->addWidget(grpARX);
 
         scrollArea->setWidget(scrollAreaWidgetContents);
 
@@ -536,7 +557,7 @@ public:
 
         interwal = new QSpinBox(centralwidget);
         interwal->setObjectName("interwal");
-        interwal->setMinimum(100);
+        interwal->setMinimum(10);
         interwal->setMaximum(2000);
         interwal->setSingleStep(25);
 
@@ -583,8 +604,105 @@ public:
 
         verticalLayout_4->addLayout(horizontalLayout_3);
 
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setObjectName("horizontalLayout_6");
+        horizontalLayout_6->setContentsMargins(-1, -1, 5, 5);
+        horizontalSpacer_13 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_13);
+
+        lblStatus = new QLabel(centralwidget);
+        lblStatus->setObjectName("lblStatus");
+
+        horizontalLayout_6->addWidget(lblStatus);
+
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_3);
+
+        label_19 = new QLabel(centralwidget);
+        label_19->setObjectName("label_19");
+
+        horizontalLayout_6->addWidget(label_19);
+
+        txtIP_A = new QLineEdit(centralwidget);
+        txtIP_A->setObjectName("txtIP_A");
+
+        horizontalLayout_6->addWidget(txtIP_A);
+
+        label_20 = new QLabel(centralwidget);
+        label_20->setObjectName("label_20");
+
+        horizontalLayout_6->addWidget(label_20);
+
+        txtIP_B = new QLineEdit(centralwidget);
+        txtIP_B->setObjectName("txtIP_B");
+
+        horizontalLayout_6->addWidget(txtIP_B);
+
+        label_21 = new QLabel(centralwidget);
+        label_21->setObjectName("label_21");
+
+        horizontalLayout_6->addWidget(label_21);
+
+        txtIP_C = new QLineEdit(centralwidget);
+        txtIP_C->setObjectName("txtIP_C");
+
+        horizontalLayout_6->addWidget(txtIP_C);
+
+        label_22 = new QLabel(centralwidget);
+        label_22->setObjectName("label_22");
+
+        horizontalLayout_6->addWidget(label_22);
+
+        txtIP_D = new QLineEdit(centralwidget);
+        txtIP_D->setObjectName("txtIP_D");
+
+        horizontalLayout_6->addWidget(txtIP_D);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_4);
+
+        label_23 = new QLabel(centralwidget);
+        label_23->setObjectName("label_23");
+
+        horizontalLayout_6->addWidget(label_23);
+
+        spinBox_Port = new QSpinBox(centralwidget);
+        spinBox_Port->setObjectName("spinBox_Port");
+        spinBox_Port->setMaximum(65535);
+        spinBox_Port->setValue(23);
+
+        horizontalLayout_6->addWidget(spinBox_Port);
+
+        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_11);
+
+        ckbServer = new QCheckBox(centralwidget);
+        ckbServer->setObjectName("ckbServer");
+
+        horizontalLayout_6->addWidget(ckbServer);
+
+        btnPolacz = new QPushButton(centralwidget);
+        btnPolacz->setObjectName("btnPolacz");
+
+        horizontalLayout_6->addWidget(btnPolacz);
+
+        btnRozlacz = new QPushButton(centralwidget);
+        btnRozlacz->setObjectName("btnRozlacz");
+
+        horizontalLayout_6->addWidget(btnRozlacz);
+
+        horizontalSpacer_12 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_12);
+
+
+        verticalLayout_4->addLayout(horizontalLayout_6);
+
         verticalLayout_4->setStretch(0, 6);
-        verticalLayout_4->setStretch(1, 1);
 
         horizontalLayout->addLayout(verticalLayout_4);
 
@@ -596,7 +714,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 800, 18));
+        menubar->setGeometry(QRect(0, 0, 800, 21));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -641,6 +759,15 @@ public:
         resetButton->setText(QCoreApplication::translate("MainWindow", "Reset", nullptr));
         saveButton->setText(QCoreApplication::translate("MainWindow", "Zapisz", nullptr));
         loadButton->setText(QCoreApplication::translate("MainWindow", "Wczytaj", nullptr));
+        lblStatus->setText(QString());
+        label_19->setText(QCoreApplication::translate("MainWindow", "IPv4:", nullptr));
+        label_20->setText(QCoreApplication::translate("MainWindow", ".", nullptr));
+        label_21->setText(QCoreApplication::translate("MainWindow", ".", nullptr));
+        label_22->setText(QCoreApplication::translate("MainWindow", ".", nullptr));
+        label_23->setText(QCoreApplication::translate("MainWindow", "Port:", nullptr));
+        ckbServer->setText(QCoreApplication::translate("MainWindow", "Serwer", nullptr));
+        btnPolacz->setText(QCoreApplication::translate("MainWindow", "Po\305\202\304\205cz", nullptr));
+        btnRozlacz->setText(QCoreApplication::translate("MainWindow", "Roz\305\202\304\205cz", nullptr));
     } // retranslateUi
 
 };
