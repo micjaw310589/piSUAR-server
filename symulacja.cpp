@@ -139,7 +139,8 @@ void Symulacja::s_newClient() {
 }
 
 void Symulacja::s_clientDisc() {
-    delete m_con_klient;
+    // delete m_con_klient;
+    m_con_klient->deleteLater();
     m_con_klient = nullptr;
     emit clientDisconnected();
 }
