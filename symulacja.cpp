@@ -92,10 +92,13 @@ void Symulacja::nastepna_klatka()
 void Symulacja::sendToServer(const KlatkaSymulacji& data_to_send) {
     if (!isConnected())
         return;     // wyrzucić wyjątek ??
-
+    int nrKlatki = m_klatki_symulacji.size();
     QByteArray clientData;
+    clientData = QByteArray::fromRawData(reinterpret_cast<const char*>(nrKlatki), sizeof(int));
     const short SIZE = sizeof(KlatkaSymulacji);  // nadmierne przesyłanie danych - nie trzeba ARX (7)
-    clientData = QByteArray::fromRawData(reinterpret_cast<const char*>(&data_to_send), SIZE);
+
+    clientData.append(QByteArray::fromRawData(reinterpret_cast<const char*>(&data_to_send), SIZE+sizeof(int)));
+    clientData.append(SIZE, sizeof(int));
 
     m_socket.write(clientData);
 }
@@ -148,8 +151,16 @@ void Symulacja::s_receiveFromClient() {
 
     if (m_con_klient == nullptr)
         return;     // wyrzucić wyjątek ??
-
     QByteArray received_data = m_con_klient->readAll();
+
+    int nrKlatki = received_data.first(sizeof(int)).toInt();
+    int receivedDataLenght = received_data.last(sizeof(int)).toInt();
+    if(receivedDataLenght+(2*sizeof(int)) != received_data.size()){
+        return;
+    }
+
+    received_data.remove(0,sizeof(int)).remove(receivedDataLenght, sizeof(int));
+
     KlatkaSymulacji deserialized_data;
     std::memcpy(&deserialized_data, received_data, sizeof(KlatkaSymulacji));
 
