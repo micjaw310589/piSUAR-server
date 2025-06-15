@@ -561,7 +561,7 @@ public:
         interwal->setObjectName("interwal");
         interwal->setMinimum(10);
         interwal->setMaximum(2000);
-        interwal->setSingleStep(25);
+        interwal->setSingleStep(1);
 
         horizontalLayout_3->addWidget(interwal);
 

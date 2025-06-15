@@ -85,7 +85,8 @@ static constexpr auto qt_meta_stringdata_ZN10MainWindowE = QtMocHelpers::stringD
     "s_disconnected",
     "s_clientConnected",
     "s_clientDisconnected",
-    "s_drawSeriesOnServer"
+    "s_drawSeriesOnServer",
+    "nr_kroku"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -124,7 +125,7 @@ Q_CONSTINIT static const uint qt_meta_data_ZN10MainWindowE[] = {
       20,    0,  158,    2, 0x08,   21 /* Private */,
       21,    1,  159,    2, 0x08,   22 /* Private */,
       22,    0,  162,    2, 0x08,   24 /* Private */,
-      23,    0,  163,    2, 0x08,   25 /* Private */,
+      23,    1,  163,    2, 0x08,   25 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -146,7 +147,7 @@ Q_CONSTINIT static const uint qt_meta_data_ZN10MainWindowE[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,    2,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   24,
 
        0        // eod
 };
@@ -204,7 +205,8 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         // method 's_clientDisconnected'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 's_drawSeriesOnServer'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>
     >,
     nullptr
 } };
@@ -233,7 +235,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 16: _t->s_disconnected(); break;
         case 17: _t->s_clientConnected((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 18: _t->s_clientDisconnected(); break;
-        case 19: _t->s_drawSeriesOnServer(); break;
+        case 19: _t->s_drawSeriesOnServer((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
         default: ;
         }
     }

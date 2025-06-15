@@ -9,7 +9,8 @@ Symulacja::Symulacja(QObject *parent)
     , m_arx(ARX(-0.4, 0.0, 0.0, 0.6, 0.0, 0.0, 1))
     , m_wartosc_zadana(WartoscZadana(TypWartosciZadanej::SkokJednostkowy, 10.0, 4, 10.0))
     , m_zaklocenia(Zaklocenia(0.0, 0.1))
-    , m_i(0)    /*, m_opoznienie(3)*/
+    , m_aktualny_krok(0)    /*, m_opoznienie(3)*/
+    , m_ostatni_krok(0)
     , m_poprz_y(0)
     , m_socket(this)
     , m_isConnectedToServer{false}
@@ -30,8 +31,8 @@ Symulacja::Symulacja(QObject *parent)
     // connecty do serwera
     QAbstractSocket::connect(&m_server, SIGNAL(newConnection()),
                              this, SLOT(s_newClient()));
-    QAbstractSocket::connect(this, SIGNAL(sent()),
-                             parent, SLOT(s_drawSeriesOnServer()));
+    QAbstractSocket::connect(this, SIGNAL(sent(int)),
+                             parent, SLOT(s_drawSeriesOnServer(int)));
     QAbstractSocket::connect(this, SIGNAL(updateSettings(bool)),
                              parent, SLOT(zaktualizuj_wartosci(bool)));
 }
@@ -46,12 +47,12 @@ void Symulacja::nastepna_klatka()
     // jeśli aplikacja jest offline lub jest połączona jako klient
     if (m_con_klient == nullptr) {
 
-        m_nowe_w = m_wartosc_zadana.generuj(m_i);
+        m_nowe_w = m_wartosc_zadana.generuj(m_aktualny_krok);
         m_nowe_e = m_nowe_w - m_poprz_y;
         m_nowe_u = m_pid(m_nowe_e);
 
         if (isConnected()){
-            FrameToServer frame(m_i,
+            FrameToServer frame(m_aktualny_krok,
                                 m_nowe_w,
                                 m_nowe_u);
 
@@ -70,7 +71,7 @@ void Symulacja::nastepna_klatka()
                                                           m_pid.get_poprz_i(),
                                                           m_pid.get_poprz_d());
             m_klatki_symulacji.push_back(nowa_klatka);
-            m_i++;
+            m_aktualny_krok++;
         }
 
     }
@@ -111,7 +112,7 @@ void Symulacja::s_receiveFromServer() {
                                                   m_pid.get_poprz_i(),
                                                   m_pid.get_poprz_d());
     m_poprz_y = frame.sygn_regulowany;
-    m_i++;
+    m_aktualny_krok++;
 
     m_klatki_symulacji.push_back(nowa_klatka);
 
@@ -128,6 +129,9 @@ void Symulacja::s_newClient() {
                              this, SLOT(s_clientDisc()));
     QAbstractSocket::connect(m_con_klient, SIGNAL(readyRead()),
                              this, SLOT(s_receiveFromClient()));
+
+    m_klatki_symulacji.clear();
+    m_aktualny_krok = 0;
 
     emit clientConnected(adr);
 }
@@ -149,10 +153,10 @@ void Symulacja::s_receiveFromClient() {
     std::memcpy(&deserialized_data, received_data, sizeof(FrameToServer));
 
     emit updateSettings(true);
-    // qDebug() << deserialized_data.get_z();
-    // zrobić zakłócenie po stronie aplikacji obiektu
     double new_y = m_arx(deserialized_data.pid, m_zaklocenia.generuj(deserialized_data.krok_symulacji));
-    emit sent();
+    emit sent(deserialized_data.krok_symulacji);
+    m_ostatni_krok = deserialized_data.krok_symulacji;
+    // qDebug() << "krok: " << deserialized_data.krok_symulacji << " PID: " << deserialized_data.pid;
 
     KlatkaSymulacji nowa_klatka = KlatkaSymulacji(deserialized_data.sygn_zadany,
                                                   0.0,
@@ -164,6 +168,7 @@ void Symulacja::s_receiveFromClient() {
                                                   0.0
                                                   );
     m_klatki_symulacji.push_back(nowa_klatka);
+    // qDebug() << "Rozmiar: " << m_klatki_symulacji.size() << " ostatni PID: " << m_klatki_symulacji.back().get_u();
 
     FrameToClient frame(deserialized_data.krok_symulacji, new_y);
     QByteArray new_data_serialized;
@@ -201,7 +206,7 @@ WartoscZadana *Symulacja::get_wartosc_zadana()
 // Zaklocenia* Symulacja::get_zaklocenia() { return &m_zaklocenia; }
 void Symulacja::set_i(int wartosc)
 {
-    m_i = wartosc;
+    m_aktualny_krok = wartosc;
 }
 void Symulacja::set_opoznienie(int wartosc)
 {

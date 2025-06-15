@@ -639,7 +639,7 @@
              <number>2000</number>
             </property>
             <property name="singleStep">
-             <number>25</number>
+             <number>1</number>
             </property>
            </widget>
           </item>

@@ -53,7 +53,7 @@ private slots:
     // serwer
     void s_clientConnected(QString);
     void s_clientDisconnected();
-    void s_drawSeriesOnServer();
+    void s_drawSeriesOnServer(int nr_kroku);
 
 private:
     Ui::MainWindow *ui;

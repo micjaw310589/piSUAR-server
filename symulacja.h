@@ -24,7 +24,8 @@ private:
     ARX m_arx;
     WartoscZadana m_wartosc_zadana;
     Zaklocenia m_zaklocenia;
-    int m_i;
+    int m_aktualny_krok;
+    int m_ostatni_krok;
     double m_poprz_y;
 
     double m_nowe_w;
@@ -56,7 +57,7 @@ signals:
     // serwer
     void clientConnected(QString adr);
     void clientDisconnected();
-    void sent();
+    void sent(int nr_kroku);
     void updateSettings(bool aktualizuj_arx);
 
 private slots:
@@ -78,6 +79,7 @@ public:
     PID *get_pid();
     ARX *get_arx();
     WartoscZadana *get_wartosc_zadana();
+    int get_ostatni_krok() { return m_ostatni_krok; }
     // Zaklocenia* get_zaklocenia();
     void set_i(int);
     void set_opoznienie(int);
