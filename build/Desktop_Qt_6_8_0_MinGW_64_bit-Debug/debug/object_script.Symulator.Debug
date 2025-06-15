@@ -1,6 +1,8 @@
 debug/arx.o
 debug/dialog.o
 debug/dialogarx.o
+debug/frametoclient.o
+debug/frametoserver.o
 debug/generator.o
 debug/klatkasymulacji.o
 debug/main.o

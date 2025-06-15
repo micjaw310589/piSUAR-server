@@ -156,7 +156,7 @@ void Symulacja::s_receiveFromClient() {
     double new_y = m_arx(deserialized_data.pid, m_zaklocenia.generuj(deserialized_data.krok_symulacji));
     emit sent(deserialized_data.krok_symulacji);
     m_ostatni_krok = deserialized_data.krok_symulacji;
-    // qDebug() << "krok: " << deserialized_data.krok_symulacji << " PID: " << deserialized_data.pid;
+    //qDebug() << "krok: " << deserialized_data.krok_symulacji << " saved: " << m_ostatni_krok;
 
     KlatkaSymulacji nowa_klatka = KlatkaSymulacji(deserialized_data.sygn_zadany,
                                                   0.0,
@@ -190,6 +190,9 @@ std::vector<KlatkaSymulacji> *Symulacja::get_klatki_symulacji()
 void Symulacja::set_klatki_symulacji(std::vector<KlatkaSymulacji> wartosc)
 {
     m_klatki_symulacji = wartosc;
+}
+void Symulacja::set_ostatni_krok(int krok){
+    m_ostatni_krok = krok;
 }
 PID *Symulacja::get_pid()
 {

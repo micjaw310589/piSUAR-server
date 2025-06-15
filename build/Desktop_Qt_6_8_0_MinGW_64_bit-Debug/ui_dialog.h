@@ -28,15 +28,15 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName("Dialog");
-        Dialog->resize(320, 239);
+        Dialog->resize(320, 96);
         buttonBox = new QDialogButtonBox(Dialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setGeometry(QRect(10, 200, 301, 32));
+        buttonBox->setGeometry(QRect(10, 61, 301, 31));
         buttonBox->setOrientation(Qt::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
         label = new QLabel(Dialog);
         label->setObjectName("label");
-        label->setGeometry(QRect(20, 20, 271, 101));
+        label->setGeometry(QRect(10, 10, 301, 41));
 
         retranslateUi(Dialog);
         QObject::connect(buttonBox, &QDialogButtonBox::accepted, Dialog, qOverload<>(&QDialog::accept));

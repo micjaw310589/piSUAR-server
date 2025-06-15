@@ -641,6 +641,9 @@
             <property name="singleStep">
              <number>1</number>
             </property>
+            <property name="value">
+             <number>1000</number>
+            </property>
            </widget>
           </item>
           <item>
@@ -762,7 +765,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtIP_A"/>
+           <widget class="QLineEdit" name="txtIP_A">
+            <property name="text">
+             <string>127</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_20">
@@ -772,7 +779,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtIP_B"/>
+           <widget class="QLineEdit" name="txtIP_B">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_21">
@@ -782,7 +793,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtIP_C"/>
+           <widget class="QLineEdit" name="txtIP_C">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_22">
@@ -792,7 +807,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtIP_D"/>
+           <widget class="QLineEdit" name="txtIP_D">
+            <property name="text">
+             <string>1</string>
+            </property>
+           </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer_4">

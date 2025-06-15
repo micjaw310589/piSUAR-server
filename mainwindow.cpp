@@ -124,8 +124,9 @@ void MainWindow::timer_timeout_slot()
     wykres_arx->clear();
     /* Reset/inicjacja zakresów używanych przy zapełnianiu wykresów
      */
+    symulacja->set_ostatni_krok(symulacja->get_ostatni_krok()+1);
     int offset = 0;
-    int offset2electricboogaloo = 0;
+    int offset2electricboogaloo = symulacja->get_ostatni_krok() - symulacja->get_klatki_symulacji()->size();
     double wartosc_max = 0.0;
     double wartosc_min = 0.0;
     double wartosc_max_pid = 0.0;
@@ -135,11 +136,14 @@ void MainWindow::timer_timeout_slot()
     /* Offset będzie użyty tylko, jeśli miałby się niezmieścić na wykresie (wszerz).
      * Domyślnie pozostanie 0 i program postara się wyświetlić wszystko.
      */
-    if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
+    if ((int)symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
         offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
     }
-    if (symulacja->get_klatki_symulacji()->size() < symulacja->get_ostatni_krok())
-        offset2electricboogaloo = symulacja->get_ostatni_krok() - symulacja->get_klatki_symulacji()->size();
+
+     qDebug() << "os2: " << offset2electricboogaloo
+              << " ost krok: " << symulacja->get_ostatni_krok()
+              << " size: " << symulacja->get_klatki_symulacji()->size();
+
     /* Ustawianie horyzontalnych osi dla wszystkich 3 wykresów
      */
     chart->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size() + offset2electricboogaloo);
@@ -639,6 +643,7 @@ void MainWindow::s_clientDisconnected() {
     chart_pid->addSeries(wykres_i);
     chart_pid->addSeries(wykres_d);
 
+
     if (!symulacja->isListening()){
         ui->lblStatus->setText("Offline");
         ui->lblStatus->setStyleSheet("QLabel { color: yellow; }");
@@ -658,15 +663,21 @@ void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
     wykres_wartosci_zadanej->clear();
 
     int offset = 0;
-    int offset2electricboogaloo = nr_kroku - symulacja->get_klatki_symulacji()->size();
+    int offset2electricboogaloo = nr_kroku - symulacja->get_klatki_symulacji()->size();// + 1;
     double wartosc_min_arx = 0.0;
     double wartosc_max_arx = 0.0;
     double wartosc_max_pid = 0.0;
     double wartosc_min_pid = 0.0;
 
-    if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
+    symulacja->set_i(nr_kroku + 1);
+    //offset2electricboogaloo = 0;
+
+    if ((int)symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
         offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
     }
+    // qDebug() << "os2: " << offset2electricboogaloo
+    //          << " ost krok: " << symulacja->get_ostatni_krok()
+    //          << " size: " << symulacja->get_klatki_symulacji()->size();
 
     chart_arx->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);
     chart_pid->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);

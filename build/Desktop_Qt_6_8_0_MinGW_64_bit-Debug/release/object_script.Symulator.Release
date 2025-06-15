@@ -1,6 +1,8 @@
 release/arx.o
 release/dialog.o
 release/dialogarx.o
+release/frametoclient.o
+release/frametoserver.o
 release/generator.o
 release/klatkasymulacji.o
 release/main.o

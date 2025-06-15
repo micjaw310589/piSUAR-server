@@ -79,7 +79,8 @@ public:
     PID *get_pid();
     ARX *get_arx();
     WartoscZadana *get_wartosc_zadana();
-    int get_ostatni_krok() { return m_ostatni_krok; }
+    void set_ostatni_krok(int krok);
+    int get_ostatni_krok() { qDebug() << m_ostatni_krok; return m_ostatni_krok; }
     // Zaklocenia* get_zaklocenia();
     void set_i(int);
     void set_opoznienie(int);
