@@ -10,6 +10,8 @@
 #include "pid.h"
 #include "wartosczadana.h"
 #include "zaklocenia.h"
+#include "frametoserver.h"
+#include "frametoclient.h"
 #include <vector>
 
 class Symulacja : public QObject
@@ -38,7 +40,8 @@ private:
     QString m_IP;
     bool m_isConnectedToServer;
     // klient
-    void sendToServer(const KlatkaSymulacji& data_to_send);
+    // void sendToServer(const KlatkaSymulacji& data_to_send);
+    void sendToServer(const FrameToServer& data_to_send);
 
     // serwer
     QTcpServer m_server;

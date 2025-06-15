@@ -12,6 +12,8 @@ SOURCES += \
     arx.cpp \
     dialog.cpp \
     dialogarx.cpp \
+    frametoclient.cpp \
+    frametoserver.cpp \
     generator.cpp \
     klatkasymulacji.cpp \
     main.cpp \
@@ -25,6 +27,8 @@ HEADERS += \
     arx.h \
     dialog.h \
     dialogarx.h \
+    frametoclient.h \
+    frametoserver.h \
     generator.h \
     klatkasymulacji.h \
     mainwindow.h \

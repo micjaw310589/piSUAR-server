@@ -2,7 +2,6 @@
 #include "wartosczadana.h"
 #include <iostream>
 #include <iomanip>
-#include <functional>
 
 Symulacja::Symulacja(QObject *parent)
     : QObject{parent}
@@ -48,26 +47,15 @@ void Symulacja::nastepna_klatka()
     if (m_con_klient == nullptr) {
 
         m_nowe_w = m_wartosc_zadana.generuj(m_i);
-        m_nowe_z = m_zaklocenia.generuj(m_i);
-        // double m_nowe_e = m_nowe_w - m_arx.get_poprz_y();
         m_nowe_e = m_nowe_w - m_poprz_y;
         m_nowe_u = m_pid(m_nowe_e);
 
         if (isConnected()){
-            if (!m_klatki_symulacji.empty())
-                sendToServer(m_klatki_symulacji.back());
-            else {
-                KlatkaSymulacji nowa_klatka = KlatkaSymulacji(m_nowe_w,
-                                                              m_nowe_e,
-                                                              m_nowe_u,
-                                                              0.0,
-                                                              m_nowe_z,
-                                                              m_pid.get_poprz_p(),
-                                                              m_pid.get_poprz_i(),
-                                                              m_pid.get_poprz_d());
-                sendToServer(nowa_klatka);
-            }
+            FrameToServer frame(m_i,
+                                m_nowe_w,
+                                m_nowe_u);
 
+            sendToServer(frame);
         }
         else {
 
@@ -89,16 +77,17 @@ void Symulacja::nastepna_klatka()
 }
 
 // klient
-void Symulacja::sendToServer(const KlatkaSymulacji& data_to_send) {
+void Symulacja::sendToServer(const FrameToServer& data_to_send) {
     if (!isConnected())
         return;     // wyrzucić wyjątek ??
 
     QByteArray clientData;
-    const short SIZE = sizeof(KlatkaSymulacji);  // nadmierne przesyłanie danych - nie trzeba ARX (7)
+    const short SIZE = sizeof(FrameToServer);
     clientData = QByteArray::fromRawData(reinterpret_cast<const char*>(&data_to_send), SIZE);
 
     m_socket.write(clientData);
 }
+
 
 
 // klient
@@ -108,22 +97,26 @@ void Symulacja::s_connected() {
 }
 
 void Symulacja::s_receiveFromServer() {
-    double new_y = m_socket.readAll().toDouble();
+    QByteArray received_data = m_socket.readAll();
+    FrameToClient frame;
+    std::memcpy(&frame, received_data, sizeof(FrameToClient));
+
     // qDebug() << new_y;
     KlatkaSymulacji nowa_klatka = KlatkaSymulacji(m_nowe_w,
                                                   m_nowe_e,
                                                   m_nowe_u,
-                                                  new_y + m_nowe_z,
-                                                  m_nowe_z,
+                                                  frame.sygn_regulowany,
+                                                  0.0,
                                                   m_pid.get_poprz_p(),
                                                   m_pid.get_poprz_i(),
                                                   m_pid.get_poprz_d());
-    m_poprz_y = new_y;
+    m_poprz_y = frame.sygn_regulowany;
     m_i++;
 
     m_klatki_symulacji.push_back(nowa_klatka);
 
 }
+
 
 // serwer
 void Symulacja::s_newClient() {
@@ -152,32 +145,35 @@ void Symulacja::s_receiveFromClient() {
         return;     // wyrzucić wyjątek ??
 
     QByteArray received_data = m_con_klient->readAll();
-    KlatkaSymulacji deserialized_data;
-    std::memcpy(&deserialized_data, received_data, sizeof(KlatkaSymulacji));
+    FrameToServer deserialized_data;
+    std::memcpy(&deserialized_data, received_data, sizeof(FrameToServer));
 
     emit updateSettings(true);
     // qDebug() << deserialized_data.get_z();
-    double new_y = m_arx(deserialized_data.get_u(), deserialized_data.get_z());
+    // zrobić zakłócenie po stronie aplikacji obiektu
+    double new_y = m_arx(deserialized_data.pid, m_zaklocenia.generuj(deserialized_data.krok_symulacji));
     emit sent();
 
-    KlatkaSymulacji nowa_klatka = KlatkaSymulacji(deserialized_data.get_w(),
-                                                  deserialized_data.get_e(),
-                                                  deserialized_data.get_u(),
-                                                  new_y + deserialized_data.get_z(),
-                                                  deserialized_data.get_z(),
-                                                  deserialized_data.get_p(),
-                                                  deserialized_data.get_i(),
-                                                  deserialized_data.get_d()
+    KlatkaSymulacji nowa_klatka = KlatkaSymulacji(deserialized_data.sygn_zadany,
+                                                  0.0,
+                                                  deserialized_data.pid,
+                                                  new_y,
+                                                  0.0,
+                                                  0.0,
+                                                  0.0,
+                                                  0.0
                                                   );
-
     m_klatki_symulacji.push_back(nowa_klatka);
 
+    FrameToClient frame(deserialized_data.krok_symulacji, new_y);
     QByteArray new_data_serialized;
-    new_data_serialized = QByteArray::number(new_y);
+    const short SIZE = sizeof(FrameToClient);
+    new_data_serialized = QByteArray::fromRawData(reinterpret_cast<const char*>(&frame), SIZE);
 
     // QTimer::singleShot(1000, m_con_klient, SLOT(write(new_data_serialized)));
     m_con_klient->write(new_data_serialized);
 }
+
 
 
 /* Settery i gettery.
