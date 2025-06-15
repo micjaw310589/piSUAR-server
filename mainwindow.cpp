@@ -124,9 +124,8 @@ void MainWindow::timer_timeout_slot()
     wykres_arx->clear();
     /* Reset/inicjacja zakresów używanych przy zapełnianiu wykresów
      */
-    symulacja->set_ostatni_krok(symulacja->get_ostatni_krok()+1);
     int offset = 0;
-    int offset2electricboogaloo = symulacja->get_ostatni_krok() - symulacja->get_klatki_symulacji()->size();
+    int offset2electricboogaloo = 0;
     double wartosc_max = 0.0;
     double wartosc_min = 0.0;
     double wartosc_max_pid = 0.0;
@@ -139,10 +138,15 @@ void MainWindow::timer_timeout_slot()
     if ((int)symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
         offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
     }
+    if(symulacja->get_ostatni_krok() > symulacja->get_klatki_symulacji()->size()){
+        offset2electricboogaloo = symulacja->get_ostatni_krok() - symulacja->get_klatki_symulacji()->size();
+    }
 
      qDebug() << "os2: " << offset2electricboogaloo
               << " ost krok: " << symulacja->get_ostatni_krok()
               << " size: " << symulacja->get_klatki_symulacji()->size();
+
+    symulacja->set_ostatni_krok(symulacja->get_ostatni_krok()+1);
 
     /* Ustawianie horyzontalnych osi dla wszystkich 3 wykresów
      */
@@ -170,6 +174,7 @@ void MainWindow::timer_timeout_slot()
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
         wykres_p->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_p());
+        qDebug() << "x_p" << i+offset2electricboogaloo;
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_p());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_p());
         wykres_i->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_i());
