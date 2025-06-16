@@ -142,6 +142,8 @@ void MainWindow::timer_timeout_slot()
     }
     if (symulacja->get_klatki_symulacji()->size() < symulacja->get_ostatni_krok())
         offset2electricboogaloo = symulacja->get_ostatni_krok() - symulacja->get_klatki_symulacji()->size();
+
+    symulacja->set_ostatni_krok(symulacja->get_ostatni_krok()+1);
     /* Ustawianie horyzontalnych osi dla wszystkich 3 wykresów
      */
     chart->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size() + offset2electricboogaloo);
@@ -191,6 +193,7 @@ void MainWindow::timer_timeout_slot()
     chart->axes(Qt::Vertical).first()->setRange(wartosc_min, wartosc_max);
     chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
+
 }
 
 void MainWindow::zaktualizuj_wartosci(bool aktualizuj_arx)
@@ -703,7 +706,7 @@ void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
         std::advance(iterator_klatka_symulacji, 1);
     }
 
-    qDebug() << "offsetOX = " << offset_OX << " offset_vector = " << offset_vector;
+    // qDebug() << "offsetOX = " << offset_OX << " offset_vector = " << offset_vector;
 
     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
     chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
