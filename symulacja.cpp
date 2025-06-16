@@ -64,7 +64,7 @@ void Symulacja::nastepna_klatka()
 
         if (isConnected()){
             // qDebug() << resetOrderFromClient;
-            FrameToServer frame(m_aktualny_krok,
+            FrameToServer frame(m_klatki_symulacji.size(),
                                 shouldServerBeRunning,
                                 resetOrderFromClient,
                                 m_nowe_w,
@@ -148,7 +148,7 @@ void Symulacja::s_newClient() {
                              this, SLOT(s_receiveFromClient()));
 
 
-    m_klatki_symulacji.clear();
+    // m_klatki_symulacji.clear();
     m_aktualny_krok = 0;
 
     emit clientConnected(adr);
@@ -198,7 +198,7 @@ void Symulacja::s_receiveFromClient() {
     shouldServerBeRunning = deserialized_data.isTimerEnabled;
     resetOrderFromClient = deserialized_data.isReseted;
 
-    qDebug() << "Reset: " << deserialized_data.isReseted;
+    // qDebug() << "Reset: " << deserialized_data.isReseted;
     if (deserialized_data.isReseted) {
         m_klatki_symulacji.clear();
         m_aktualny_krok = 0;

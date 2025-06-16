@@ -656,9 +656,47 @@ void MainWindow::s_clientDisconnected() {
         ui->lblStatus->setText("Nasłuch na p. " + QString::number(ui->spinBox_Port->value()));
         ui->lblStatus->setStyleSheet("QLabel { color: green; }");
     }
-
-    // on_startButton_clicked();
 }
+
+// void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
+//     // qDebug() << "drawChartSeries";
+//     wykres_arx->clear();
+//     wykres_pid->clear();
+//     wykres_wartosci_zadanej->clear();
+
+//     int offset = 0;
+//     int offset2electricboogaloo = nr_kroku - symulacja->get_klatki_symulacji()->size();
+//     double wartosc_min_arx = 0.0;
+//     double wartosc_max_arx = 0.0;
+//     double wartosc_max_pid = 0.0;
+//     double wartosc_min_pid = 0.0;
+
+//     if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
+//         offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
+//     }
+
+//     chart_arx->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);
+//     chart_pid->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);
+
+//     auto iterator_klatka_symulacji = symulacja->get_klatki_symulacji()->begin();
+//     std::advance(iterator_klatka_symulacji, offset);
+
+//     for (size_t i = offset; i < symulacja->get_klatki_symulacji()->size(); i++) {
+//         wykres_arx->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_y());
+//         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_y());
+//         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_y());
+//         wykres_pid->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_u());
+//         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
+//         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
+//         wykres_wartosci_zadanej->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_w());
+//         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_w());
+//         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_w());
+//         std::advance(iterator_klatka_symulacji, 1);
+//     }
+
+//     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
+//     chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
+// }
 
 void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
     // qDebug() << "drawChartSeries";
@@ -666,63 +704,43 @@ void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
     wykres_pid->clear();
     wykres_wartosci_zadanej->clear();
 
-    int offset = 0;
-    int offset2electricboogaloo = nr_kroku - symulacja->get_klatki_symulacji()->size();
+    int offset_vector = 0;
+    int offset_OX = 0;
     double wartosc_min_arx = 0.0;
     double wartosc_max_arx = 0.0;
     double wartosc_max_pid = 0.0;
     double wartosc_min_pid = 0.0;
 
-    if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
-        offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
+    if (nr_kroku > ZAKRES_WYKRESU) {
+        offset_OX = nr_kroku - ZAKRES_WYKRESU;
     }
 
-    chart_arx->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);
-    chart_pid->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);
+    if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
+        offset_vector = symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
+    }
+
+    chart_arx->axes(Qt::Horizontal).first()->setRange(offset_OX, nr_kroku);
+    chart_pid->axes(Qt::Horizontal).first()->setRange(offset_OX, nr_kroku);
 
     auto iterator_klatka_symulacji = symulacja->get_klatki_symulacji()->begin();
-    std::advance(iterator_klatka_symulacji, offset);
+    std::advance(iterator_klatka_symulacji, offset_vector);
 
-    for (size_t i = offset; i < symulacja->get_klatki_symulacji()->size(); i++) {
-        wykres_arx->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_y());
+    for (size_t i = offset_OX; i < nr_kroku; i++) {
+        wykres_arx->append(i, iterator_klatka_symulacji->get_y());
         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_y());
         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_y());
-        wykres_pid->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_u());
+        wykres_pid->append(i, iterator_klatka_symulacji->get_u());
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
-        wykres_wartosci_zadanej->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_w());
+        wykres_wartosci_zadanej->append(i, iterator_klatka_symulacji->get_w());
         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_w());
         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_w());
         std::advance(iterator_klatka_symulacji, 1);
     }
 
-    // if (nr_kroku > ZAKRES_WYKRESU) {
-    //     offset = nr_kroku - ZAKRES_WYKRESU;
-    // }
-
-    // chart_arx->axes(Qt::Horizontal).first()->setRange(offset, nr_kroku);
-    // chart_pid->axes(Qt::Horizontal).first()->setRange(offset, nr_kroku);
-
-    // auto iterator_klatka_symulacji = symulacja->get_klatki_symulacji()->begin();
-    // std::advance(iterator_klatka_symulacji, offset);
-
-    // for (int i = offset; i < nr_kroku; i++) {
-    //     wykres_arx->append(i, iterator_klatka_symulacji->get_y());
-    //     wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_y());
-    //     wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_y());
-    //     wykres_pid->append(i, iterator_klatka_symulacji->get_u());
-    //     wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
-    //     wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
-    //     wykres_wartosci_zadanej->append(i, iterator_klatka_symulacji->get_w());
-    //     wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_w());
-    //     wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_w());
-    //     std::advance(iterator_klatka_symulacji, 1);
-    // }
-
     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
     chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
 }
-
 
 void MainWindow::s_error_handling(const QAbstractSocket::SocketError &err) {
     if (err == QAbstractSocket::RemoteHostClosedError)

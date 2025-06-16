@@ -562,6 +562,7 @@ public:
         interwal->setMinimum(10);
         interwal->setMaximum(2000);
         interwal->setSingleStep(1);
+        interwal->setValue(100);
 
         horizontalLayout_3->addWidget(interwal);
 
@@ -780,9 +781,13 @@ public:
         loadButton->setText(QCoreApplication::translate("MainWindow", "Wczytaj", nullptr));
         lblStatus->setText(QString());
         label_19->setText(QCoreApplication::translate("MainWindow", "IPv4:", nullptr));
+        txtIP_A->setText(QCoreApplication::translate("MainWindow", "127", nullptr));
         label_20->setText(QCoreApplication::translate("MainWindow", ".", nullptr));
+        txtIP_B->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
         label_21->setText(QCoreApplication::translate("MainWindow", ".", nullptr));
+        txtIP_C->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
         label_22->setText(QCoreApplication::translate("MainWindow", ".", nullptr));
+        txtIP_D->setText(QCoreApplication::translate("MainWindow", "1", nullptr));
         label_23->setText(QCoreApplication::translate("MainWindow", "Port:", nullptr));
         ckbServer->setText(QCoreApplication::translate("MainWindow", "Serwer", nullptr));
         lblLightIndicator->setText(QString());
