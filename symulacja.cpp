@@ -148,7 +148,7 @@ void Symulacja::s_newClient() {
                              this, SLOT(s_receiveFromClient()));
 
 
-    // m_klatki_symulacji.clear();
+    m_klatki_symulacji.clear();
     m_aktualny_krok = 0;
 
     emit clientConnected(adr);

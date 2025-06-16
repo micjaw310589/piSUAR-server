@@ -622,9 +622,9 @@ void MainWindow::s_clientConnected(QString adr) {
     ui->loadButton->setEnabled(false);
 
     chart_view->setVisible(false);
-    chart_pid->removeSeries(wykres_p);
-    chart_pid->removeSeries(wykres_i);
-    chart_pid->removeSeries(wykres_d);
+    wykres_p->setVisible(false);
+    wykres_i->setVisible(false);
+    wykres_d->setVisible(false);
 
     ui->lblStatus->setText("Klient " + adr + " połączony");
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
@@ -644,9 +644,9 @@ void MainWindow::s_clientDisconnected() {
     ui->loadButton->setEnabled(true);
 
     chart_view->setVisible(true);
-    chart_pid->addSeries(wykres_p);
-    chart_pid->addSeries(wykres_i);
-    chart_pid->addSeries(wykres_d);
+    wykres_p->setVisible(true);
+    wykres_i->setVisible(true);
+    wykres_d->setVisible(true);
 
     if (!symulacja->isListening()){
         ui->lblStatus->setText("Offline");
@@ -657,46 +657,6 @@ void MainWindow::s_clientDisconnected() {
         ui->lblStatus->setStyleSheet("QLabel { color: green; }");
     }
 }
-
-// void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
-//     // qDebug() << "drawChartSeries";
-//     wykres_arx->clear();
-//     wykres_pid->clear();
-//     wykres_wartosci_zadanej->clear();
-
-//     int offset = 0;
-//     int offset2electricboogaloo = nr_kroku - symulacja->get_klatki_symulacji()->size();
-//     double wartosc_min_arx = 0.0;
-//     double wartosc_max_arx = 0.0;
-//     double wartosc_max_pid = 0.0;
-//     double wartosc_min_pid = 0.0;
-
-//     if (symulacja->get_klatki_symulacji()->size() > ZAKRES_WYKRESU) {
-//         offset = (int) symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
-//     }
-
-//     chart_arx->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);
-//     chart_pid->axes(Qt::Horizontal).first()->setRange(offset + offset2electricboogaloo, symulacja->get_klatki_symulacji()->size()+offset2electricboogaloo);
-
-//     auto iterator_klatka_symulacji = symulacja->get_klatki_symulacji()->begin();
-//     std::advance(iterator_klatka_symulacji, offset);
-
-//     for (size_t i = offset; i < symulacja->get_klatki_symulacji()->size(); i++) {
-//         wykres_arx->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_y());
-//         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_y());
-//         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_y());
-//         wykres_pid->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_u());
-//         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
-//         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
-//         wykres_wartosci_zadanej->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_w());
-//         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_w());
-//         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_w());
-//         std::advance(iterator_klatka_symulacji, 1);
-//     }
-
-//     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
-//     chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
-// }
 
 void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
     // qDebug() << "drawChartSeries";
@@ -719,12 +679,17 @@ void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
         offset_vector = symulacja->get_klatki_symulacji()->size() - ZAKRES_WYKRESU;
     }
 
+    if (symulacja->get_klatki_symulacji()->size() < ZAKRES_WYKRESU) {
+        offset_OX = nr_kroku - symulacja->get_klatki_symulacji()->size();
+    }
+
     chart_arx->axes(Qt::Horizontal).first()->setRange(offset_OX, nr_kroku);
     chart_pid->axes(Qt::Horizontal).first()->setRange(offset_OX, nr_kroku);
 
     auto iterator_klatka_symulacji = symulacja->get_klatki_symulacji()->begin();
     std::advance(iterator_klatka_symulacji, offset_vector);
 
+    // for (size_t i = offset_vector; i < symulacja->get_klatki_symulacji()->size(); i++) {
     for (size_t i = offset_OX; i < nr_kroku; i++) {
         wykres_arx->append(i, iterator_klatka_symulacji->get_y());
         wartosc_min_arx = std::min(wartosc_min_arx, iterator_klatka_symulacji->get_y());
@@ -737,6 +702,8 @@ void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
         wartosc_max_arx = std::max(wartosc_max_arx, iterator_klatka_symulacji->get_w());
         std::advance(iterator_klatka_symulacji, 1);
     }
+
+    qDebug() << "offsetOX = " << offset_OX << " offset_vector = " << offset_vector;
 
     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
     chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
@@ -801,10 +768,10 @@ void MainWindow::resetujKlienta() {
 void MainWindow::resetujSerwer() {
     if (symulacja != nullptr) {
         symulacja->stopListening();
-        delete symulacja;
+        // delete symulacja;
     }
 
-    symulacja = new Symulacja(this);
+    // symulacja = new Symulacja(this);
 
     connect(symulacja, SIGNAL(clientConnected(QString)),
             this, SLOT(s_clientConnected(QString)));
