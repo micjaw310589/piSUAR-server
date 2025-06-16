@@ -173,13 +173,16 @@ void MainWindow::timer_timeout_slot()
         wykres_pid->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_u());
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_u());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_u());
+
         wykres_p->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_p());
-        qDebug() << "x_p" << i+offset2electricboogaloo;
+        qDebug() << "x_p" << i+offset2electricboogaloo << "y_p" << iterator_klatka_symulacji->get_p();
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_p());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_p());
+
         wykres_i->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_i());
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_i());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_i());
+
         wykres_d->append(i + offset2electricboogaloo, iterator_klatka_symulacji->get_d());
         wartosc_min_pid = std::min(wartosc_min_pid, iterator_klatka_symulacji->get_d());
         wartosc_max_pid = std::max(wartosc_max_pid, iterator_klatka_symulacji->get_d());
@@ -625,6 +628,7 @@ void MainWindow::s_clientConnected(QString adr) {
     chart_pid->removeSeries(wykres_p);
     chart_pid->removeSeries(wykres_i);
     chart_pid->removeSeries(wykres_d);
+    qDebug() << "usunięto";
 
     ui->lblStatus->setText("Klient " + adr + " połączony");
     ui->lblStatus->setStyleSheet("QLabel { color: aqua; }");
@@ -647,7 +651,7 @@ void MainWindow::s_clientDisconnected() {
     chart_pid->addSeries(wykres_p);
     chart_pid->addSeries(wykres_i);
     chart_pid->addSeries(wykres_d);
-
+    qDebug() << "dodano";
 
     if (!symulacja->isListening()){
         ui->lblStatus->setText("Offline");
