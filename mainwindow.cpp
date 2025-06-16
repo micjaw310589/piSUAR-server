@@ -111,8 +111,10 @@ void MainWindow::timer_timeout_slot()
     // zaktualizuj_wartosci(false);  // Tutaj ustawiam aktualizowanie się wartości z lewego panelu, z wyłączeniem ARX
     zaktualizuj_wartosci();
     ODSWIEZANIE = ui->interwal->value();  // Zczytuję z dolnego panelu jak często ma się symulacja wywoływać
-    timer->start(ODSWIEZANIE);  // Ustawiamy jak często mają się klatki odświeżać
+    // timer->start(ODSWIEZANIE);  // Ustawiamy jak często mają się klatki odświeżać
+    timer->setInterval(ODSWIEZANIE);
     symulacja->nastepna_klatka();  // Wywołanie następnej klatki symulacji
+    // order_to_server = FrameSimulationControlByte::ContinueAsIs;
     /* Czyszczenie wykresów
      */
     wykres_wartosci_zadanej->clear();
@@ -234,15 +236,15 @@ void MainWindow::zaktualizuj_wartosci(bool aktualizuj_arx)
 MainWindow::~MainWindow()
 {
     // if (wykres_obraz != nullptr) delete wykres_obraz;
-    delete chart;
-    delete chart_pid;
-    delete chart_arx;
-    delete chart_view;
-    delete chart_pid_view;
-    delete chart_arx_view;
-    delete symulacja;
-    delete timer;
-    delete dialog_arx;
+    // delete chart;
+    // delete chart_pid;
+    // delete chart_arx;
+    // delete chart_view;
+    // delete chart_pid_view;
+    // delete chart_arx_view;
+    // delete symulacja;
+    // delete timer;
+    // delete dialog_arx;
     delete ui;
 }
 
@@ -250,6 +252,7 @@ MainWindow::~MainWindow()
  */
 void MainWindow::on_startButton_clicked()
 {
+    symulacja->set_shouldServerBeRunning(true);
     zaktualizuj_wartosci();
     symulacja->set_opoznienie(ui->opoznienie->value()); // Nadpisanie opóźnienia dla nowej symulacji
     timer->start(ODSWIEZANIE);
@@ -259,6 +262,8 @@ void MainWindow::on_startButton_clicked()
  */
 void MainWindow::on_stopButton_clicked()
 {
+    symulacja->set_shouldServerBeRunning(false);
+    QTimer::singleShot(ui->interwal->value(), this, &MainWindow::timer_timeout_slot);
     timer->stop();
 }
 
@@ -268,9 +273,13 @@ void MainWindow::on_stopButton_clicked()
  */
 void MainWindow::on_resetButton_clicked()
 {
+    symulacja->set_resetOrderFromClient(true);
+    QTimer::singleShot(ui->interwal->value(), this, &MainWindow::timer_timeout_slot);
     timer->stop();
-    symulacja->set_i(0);                                // Reset i klatki symulacji
     symulacja->set_klatki_symulacji(std::vector<KlatkaSymulacji>()); // Nadpisanie listy
+    symulacja->set_aktualny_krok(0);    // Reset i klatki symulacji
+    symulacja->set_ostatni_krok(0);
+
     wykres_wartosci_zadanej->clear();
     wykres_uchybu->clear();
     wykres_pid->clear();
@@ -278,8 +287,8 @@ void MainWindow::on_resetButton_clicked()
     wykres_i->clear();
     wykres_d->clear();
     wykres_arx->clear();
-    delete symulacja;
-    symulacja = new Symulacja();
+    // delete symulacja;
+    // symulacja = new Symulacja();
     zaktualizuj_wartosci();
 }
 
@@ -612,7 +621,7 @@ void MainWindow::s_clientConnected(QString adr) {
     ui->saveButton->setEnabled(false);
     ui->loadButton->setEnabled(false);
 
-    chart_view->hide();
+    chart_view->setVisible(false);
     chart_pid->removeSeries(wykres_p);
     chart_pid->removeSeries(wykres_i);
     chart_pid->removeSeries(wykres_d);
@@ -634,7 +643,7 @@ void MainWindow::s_clientDisconnected() {
     ui->saveButton->setEnabled(true);
     ui->loadButton->setEnabled(true);
 
-    chart_view->show();
+    chart_view->setVisible(true);
     chart_pid->addSeries(wykres_p);
     chart_pid->addSeries(wykres_i);
     chart_pid->addSeries(wykres_d);
@@ -648,7 +657,7 @@ void MainWindow::s_clientDisconnected() {
         ui->lblStatus->setStyleSheet("QLabel { color: green; }");
     }
 
-    on_startButton_clicked();
+    // on_startButton_clicked();
 }
 
 void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
@@ -712,6 +721,16 @@ void MainWindow::s_drawSeriesOnServer(int nr_kroku) {
 
     chart_arx->axes(Qt::Vertical).first()->setRange(wartosc_min_arx, wartosc_max_arx);
     chart_pid->axes(Qt::Vertical).first()->setRange(wartosc_min_pid, wartosc_max_pid);
+}
+
+
+void MainWindow::s_error_handling(const QAbstractSocket::SocketError &err) {
+    if (err == QAbstractSocket::RemoteHostClosedError)
+        symulacja->disconnect();
+    else if (err == QAbstractSocket::NetworkError) {
+        Dialog *window = new Dialog("NIESPODZIEWANE ZERWANIE POŁĄCZENIA!\nAplikacja przeszła w tryb offline.", this);
+        window->exec();
+    }
 }
 
 

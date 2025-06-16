@@ -55,6 +55,8 @@ private slots:
     void s_clientDisconnected();
     void s_drawSeriesOnServer(int nr_kroku);
 
+    void s_error_handling(const QAbstractSocket::SocketError &err);
+
 private:
     Ui::MainWindow *ui;
     int ODSWIEZANIE = 150;   // Co tyle milisekund będą się wywoływać następne klatki animacji

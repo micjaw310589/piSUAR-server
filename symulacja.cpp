@@ -11,6 +11,7 @@ Symulacja::Symulacja(QObject *parent)
     , m_zaklocenia(Zaklocenia(0.0, 0.1))
     , m_aktualny_krok(0)    /*, m_opoznienie(3)*/
     , m_ostatni_krok(0)
+    , shouldServerBeRunning(0)
     , m_poprz_y(0)
     , m_socket(this)
     , m_isConnectedToServer{false}
@@ -27,14 +28,24 @@ Symulacja::Symulacja(QObject *parent)
                              this, SIGNAL(disconnected()));
     QAbstractSocket::connect(&m_socket, SIGNAL(readyRead()),
                              this, SLOT(s_receiveFromServer()));
+    QAbstractSocket::connect(&m_socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+                             parent, SLOT(s_error_handling(QAbstractSocket::SocketError)));
 
     // connecty do serwera
     QAbstractSocket::connect(&m_server, SIGNAL(newConnection()),
                              this, SLOT(s_newClient()));
+
     QAbstractSocket::connect(this, SIGNAL(sent(int)),
                              parent, SLOT(s_drawSeriesOnServer(int)));
     QAbstractSocket::connect(this, SIGNAL(updateSettings(bool)),
                              parent, SLOT(zaktualizuj_wartosci(bool)));
+    QAbstractSocket::connect(this, SIGNAL(signalStart()),
+                             parent, SLOT(on_startButton_clicked()));
+    QAbstractSocket::connect(this, SIGNAL(signalStop()),
+                             parent, SLOT(on_stopButton_clicked()));
+    QAbstractSocket::connect(this, SIGNAL(signalReset()),
+                             parent, SLOT(on_resetButton_clicked()));
+
 }
 
 /* Jedna z najważniejszych funkcji w tym programi.
@@ -52,10 +63,14 @@ void Symulacja::nastepna_klatka()
         m_nowe_u = m_pid(m_nowe_e);
 
         if (isConnected()){
+            // qDebug() << resetOrderFromClient;
             FrameToServer frame(m_aktualny_krok,
+                                shouldServerBeRunning,
+                                resetOrderFromClient,
                                 m_nowe_w,
                                 m_nowe_u);
 
+            resetOrderFromClient = false;
             sendToServer(frame);
         }
         else {
@@ -121,6 +136,8 @@ void Symulacja::s_receiveFromServer() {
 
 // serwer
 void Symulacja::s_newClient() {
+    emit signalStop();
+
     QTcpSocket *klient = m_server.nextPendingConnection();
     m_con_klient = klient;
 
@@ -129,6 +146,7 @@ void Symulacja::s_newClient() {
                              this, SLOT(s_clientDisc()));
     QAbstractSocket::connect(m_con_klient, SIGNAL(readyRead()),
                              this, SLOT(s_receiveFromClient()));
+
 
     m_klatki_symulacji.clear();
     m_aktualny_krok = 0;
@@ -140,6 +158,8 @@ void Symulacja::s_clientDisc() {
     // delete m_con_klient;
     m_con_klient->deleteLater();
     m_con_klient = nullptr;
+    if (shouldServerBeRunning)
+        emit signalStart();
     emit clientDisconnected();
 }
 
@@ -175,7 +195,16 @@ void Symulacja::s_receiveFromClient() {
     const short SIZE = sizeof(FrameToClient);
     new_data_serialized = QByteArray::fromRawData(reinterpret_cast<const char*>(&frame), SIZE);
 
-    // QTimer::singleShot(1000, m_con_klient, SLOT(write(new_data_serialized)));
+    shouldServerBeRunning = deserialized_data.isTimerEnabled;
+    resetOrderFromClient = deserialized_data.isReseted;
+
+    qDebug() << "Reset: " << deserialized_data.isReseted;
+    if (deserialized_data.isReseted) {
+        m_klatki_symulacji.clear();
+        m_aktualny_krok = 0;
+        m_ostatni_krok = 0;
+    }
+
     m_con_klient->write(new_data_serialized);
 }
 
@@ -204,10 +233,20 @@ WartoscZadana *Symulacja::get_wartosc_zadana()
     return &m_wartosc_zadana;
 }
 // Zaklocenia* Symulacja::get_zaklocenia() { return &m_zaklocenia; }
-void Symulacja::set_i(int wartosc)
+void Symulacja::set_aktualny_krok(int wartosc)
 {
     m_aktualny_krok = wartosc;
 }
+void Symulacja::set_ostatni_krok(int wartosc) {
+    m_ostatni_krok = wartosc;
+}
+void Symulacja::set_shouldServerBeRunning(bool wartosc) {
+    shouldServerBeRunning = wartosc;
+}
+void Symulacja::set_resetOrderFromClient(bool wartosc) {
+    resetOrderFromClient = wartosc;
+}
+
 void Symulacja::set_opoznienie(int wartosc)
 {
     m_arx.set_opoznienie(wartosc);

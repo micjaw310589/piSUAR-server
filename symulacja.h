@@ -26,6 +26,8 @@ private:
     Zaklocenia m_zaklocenia;
     int m_aktualny_krok;
     int m_ostatni_krok;
+    bool shouldServerBeRunning;
+    bool resetOrderFromClient;
     double m_poprz_y;
 
     double m_nowe_w;
@@ -59,6 +61,9 @@ signals:
     void clientDisconnected();
     void sent(int nr_kroku);
     void updateSettings(bool aktualizuj_arx);
+    void signalReset();
+    void signalStart();
+    void signalStop();
 
 private slots:
     // klient
@@ -81,7 +86,10 @@ public:
     WartoscZadana *get_wartosc_zadana();
     int get_ostatni_krok() { return m_ostatni_krok; }
     // Zaklocenia* get_zaklocenia();
-    void set_i(int);
+    void set_aktualny_krok(int);
+    void set_ostatni_krok(int);
+    void set_shouldServerBeRunning(bool);
+    void set_resetOrderFromClient(bool);
     void set_opoznienie(int);
     void set_zaklocenia(double srednia, double odchylenie);
 
